@@ -1,5 +1,20 @@
-# run the python script
-#for n_elems in 20 30 40 50 60 70 80 90 100; do
+#!/bin/bash
+
+#$ -cwd
+#$ -j y
+#$ -pe smp 8        # Request cores (8 per GPU)
+#$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
+#$ -l h_rt=48:0:0    # Max 1hr runtime (can request up to 240hr)
+#$ -l gpu=1         # Request GPU
+#$ -N attention      # Name for the job (optional)
+
+# Load the necessary modules
+module load python/3.8.5
+module load cudnn/7.6-cuda-10.1
+
+# Load the virtualenv containing the pytorch package
+source ~/project/venv/bin/activate
+
 python train_lstm.py --n_elems=20 \
                      --n_train_elems=15 \
                      --n_train_samples=128000 \
