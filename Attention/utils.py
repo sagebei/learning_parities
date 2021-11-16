@@ -2,7 +2,9 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
 from os.path import exists
-
+# import sys
+# import os
+# sys.path.append(os.path.abspath('../'))
 
 class ParityDataset(Dataset):
     def __init__(
