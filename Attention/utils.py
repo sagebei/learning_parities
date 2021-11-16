@@ -35,7 +35,6 @@ class ParityDataset(Dataset):
         dataset_path = f"../datasets/{n_samples}_{n_elems}_{n_nonzero_max}_{n_nonzero_min}_{unique}_{model}.pt"
         if exists(dataset_path):
             self.X, self.Y = torch.load(dataset_path)
-            print(self.X.shape)
         elif self.n_samples > 0:
             self.build_dataset()
             torch.save([self.X, self.Y], dataset_path)
