@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
+from os.path import exists
 
 
 class ParityDataset(Dataset):
@@ -30,9 +31,12 @@ class ParityDataset(Dataset):
         self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
 
         self.X, self.Y = [], []
-        if self.n_samples > 0:
+        dataset_path = f"../datasets/{n_samples}_{n_elems}_{n_nonzero_max}_{n_nonzero_min}_{unique}_{model}.pt"
+        if exists(dataset_path):
+            self.X, self.Y = torch.load(dataset_path)
+        elif self.n_samples > 0:
             self.build_dataset()
-
+            torch.save([self.X, self.Y], dataset_path)
 
     def __len__(self):
         return self.n_samples

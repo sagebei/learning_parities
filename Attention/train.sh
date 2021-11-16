@@ -23,6 +23,7 @@ python train_self_attention.py --n_elems=30 \
                                --n_eval_samples=10000 \
                                --n_exclusive_data=0 \
                                --n_epochs=100 \
+                               --batch_size=128 \
                                --n_layers=$n_layers \
                                --train_unique='' \
                                --mode='soft' \
@@ -30,5 +31,6 @@ python train_self_attention.py --n_elems=30 \
                                --n_heads=3 \
                                --linear_dim=30 \
                                --dropout=0.2 \
-                               --log_folder='results'
+                               --log_folder='results' \
+                               --num_workers=2
 done;
