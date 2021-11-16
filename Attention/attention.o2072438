@@ -1,3 +1,0 @@
-Variable OMP_NUM_THREADS has been set to 8
-Loading cudnn/7.6-cuda-10.1
-  Loading requirement: cuda/10.1.243

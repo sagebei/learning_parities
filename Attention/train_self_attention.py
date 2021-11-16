@@ -190,5 +190,5 @@ if __name__ == '__main__':
                                unique=True,
                                model='cnn')
     main(num_workers=args.num_workers,
-         use_gpu=False)
+         use_gpu=True)
 

@@ -2,10 +2,10 @@
 
 #$ -cwd
 #$ -j y
-#$ -pe smp 8        # Request cores (8 per GPU)
+#$ -pe smp 16        # Request cores (8 per GPU)
 #$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
-#$ -l h_rt=48:0:0    # Max 1hr runtime (can request up to 240hr)
-#$ -l gpu=1         # Request GPU
+#$ -l h_rt=24:0:0    # Max 1hr runtime (can request up to 240hr)
+#$ -l gpu=2         # Request GPU
 #$ -N attention      # Name for the job (optional)
 
 # Load the necessary modules
@@ -16,10 +16,10 @@ module load cudnn/7.6-cuda-10.1
 source ~/project/venv/bin/activate
 
 # run the python script
-for n_layers in 1 2 3 4 5 6 7 8 9; do
-python train_self_attention.py --n_elems=30 \
-                               --n_train_elems=25 \
-                               --n_train_samples=256000 \
+for n_layers in 1 2 3 4 5 6 7 8 9 10 11 12 13 15 16; do
+python train_self_attention.py --n_elems=60 \
+                               --n_train_elems=55 \
+                               --n_train_samples=512000 \
                                --n_eval_samples=10000 \
                                --n_exclusive_data=0 \
                                --n_epochs=100 \
@@ -31,6 +31,6 @@ python train_self_attention.py --n_elems=30 \
                                --n_heads=3 \
                                --linear_dim=30 \
                                --dropout=0.2 \
-                               --log_folder='results' \
+                               --log_folder='results60' \
                                --num_workers=2
 done;
