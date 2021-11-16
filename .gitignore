@@ -7,3 +7,4 @@ Trail
 results*/
 *.o*
 .idea
+datasets/
