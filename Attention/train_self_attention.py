@@ -13,7 +13,6 @@ from utils import ParityDataset
 from utils import batch_accuracy, dataloader_accuracy
 from models import SelfAttentionModel
 import argparse
-
 import numpy as np
 import random
 
