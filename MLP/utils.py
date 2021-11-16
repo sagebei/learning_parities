@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
+from os.path import exists
 
 
 class ParityDataset(Dataset):
@@ -12,7 +13,8 @@ class ParityDataset(Dataset):
         n_nonzero_max=None,
         exclude_dataset=None,
         unique=False,
-        model='rnn'
+        model='rnn',
+        data_augmentation=0,
     ):
         self.n_samples = n_samples
         self.n_elems = n_elems
@@ -23,14 +25,18 @@ class ParityDataset(Dataset):
         )
 
         self.model = model
-
+        self.data_augmentation = data_augmentation
         self.unique = unique
         self.unique_set = set()
         self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
 
         self.X, self.Y = [], []
-        if self.n_samples > 0:
+        dataset_path = f"../datasets/{n_samples}_{n_elems}_{n_nonzero_max}_{n_nonzero_min}_{unique}_{model}.pt"
+        if exists(dataset_path):
+            self.X, self.Y = torch.load(dataset_path)
+        elif self.n_samples > 0:
             self.build_dataset()
+            torch.save([self.X, self.Y], dataset_path)
 
     def __len__(self):
         return self.n_samples
@@ -62,8 +68,13 @@ class ParityDataset(Dataset):
             self.Y.append(y)
             self.unique_set.add(item)
 
-        self.Y = torch.Tensor(self.Y).float()
+        if self.data_augmentation > 0:
+            n_aug = int(self.data_augmentation * self.n_samples)
+            self.X += self.X[:n_aug]
+            self.Y += self.Y[:n_aug]
+            self.n_samples += n_aug
 
+        self.Y = torch.Tensor(self.Y).float()
         if self.model == 'rnn':
             self.X = torch.stack(self.X).float().unsqueeze(dim=-1)
         elif self.model == 'mlp':
@@ -71,6 +82,10 @@ class ParityDataset(Dataset):
         elif self.model == 'cnn':
             self.X = torch.stack(self.X).to(torch.int64) + 1
             self.X = F.one_hot(self.X, num_classes=3).float()
+
+        perm_index = torch.randperm(self.X.size()[0])
+        self.X = self.X[perm_index]
+        self.Y = self.Y[perm_index]
 
     def __getitem__(self, index):
         return self.X[index], self.Y[index]
@@ -96,4 +111,5 @@ def dataloader_accuracy(dataloader, model):
     if len(accuracy) == 0:
         return 0
     return sum(accuracy) / len(accuracy)
+
 
