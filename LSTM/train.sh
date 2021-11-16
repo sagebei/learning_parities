@@ -16,14 +16,14 @@ module load cudnn/7.6-cuda-10.1
 source ~/project/venv/bin/activate
 
 for n_layer in 1 2 3 4 5 6 7 8 9; do
-python train_lstm.py --n_elems=120 \
-                     --n_train_elems=115 \
-                     --n_train_samples=1024000 \
+python train_lstm.py --n_elems=200 \
+                     --n_train_elems=195 \
+                     --n_train_samples=2048000 \
                      --n_eval_samples=10000 \
                      --n_epochs=200 \
                      --n_layers=$n_layer \
                      --train_unique='' \
                      --n_exclusive_data=0 \
                      --data_augmentation=0 \
-                     --log_folder='results120'
+                     --log_folder='results200'
 done;
