@@ -15,14 +15,15 @@ module load cudnn/7.6-cuda-10.1
 # Load the virtualenv containing the pytorch package
 source ~/project/venv/bin/activate
 
-
-python train_cnn.py --n_elems=20 \
-                    --n_train_elems=15 \
-                    --n_train_samples=128000 \
+for n_layer in 1 2 3 4 5 6 7 8 9; do
+python train_cnn.py --n_elems=30 \
+                    --n_train_elems=25 \
+                    --n_train_samples=256000 \
                     --n_eval_samples=10000 \
                     --n_epochs=100 \
-                    --n_layers=3 \
+                    --n_layers=$n_layer \
                     --n_out_channel=128 \
                     --train_unique='' \
                     --n_exclusive_data=0 \
                     --log_folder='results'
+done;
