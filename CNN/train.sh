@@ -6,7 +6,7 @@
 #$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
 #$ -l h_rt=48:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=1         # Request GPU
-#$ -N attention      # Name for the job (optional)
+#$ -N cnn      # Name for the job (optional)
 
 # Load the necessary modules
 module load python/3.8.5
@@ -25,5 +25,5 @@ python train_cnn.py --n_elems=30 \
                     --n_out_channel=128 \
                     --train_unique='' \
                     --n_exclusive_data=0 \
-                    --log_folder='results'
+                    --log_folder='results30'
 done;
