@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
@@ -35,6 +37,8 @@ class ParityDataset(Dataset):
         if exists(dataset_path):
             self.X, self.Y = torch.load(dataset_path)
         elif self.n_samples > 0:
+            if not exists('../datasets'):
+                os.mkdir('../datasets')
             self.build_dataset()
             torch.save([self.X, self.Y], dataset_path)
 
