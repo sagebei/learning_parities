@@ -22,6 +22,8 @@ torch.manual_seed(0)
 
 
 def train_distributed():
+    device = torch.device(f'cuda:{train.local_rank()}' if torch.cuda.is_available() else 'cpu')
+    print(device)
     writer = SummaryWriter(f'{args.log_folder}/{args.embed_dim}_{args.linear_dim}_{args.n_heads}_{args.mode}' +
                            f'_{args.n_elems}_{args.n_train_elems}_{args.n_layers}_{args.n_epochs}' +
                            f'_{args.n_eval_samples}_{args.n_train_samples}' +
@@ -153,13 +155,12 @@ if __name__ == '__main__':
                         help='log folder')
     PARSER.add_argument('--num_workers',
                         type=int,
-                        default=4,
+                        default=2,
                         help='number of workers')
 
     args = PARSER.parse_args()
     print(args)
-    device = torch.device(f'cuda:{train.local_rank()}' if torch.cuda.is_available() else 'cpu')
-    print(device)
+
 
     exclusive_data = ParityDataset(n_samples=args.n_exclusive_data,
                                    n_elems=args.n_elems,
