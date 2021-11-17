@@ -38,7 +38,7 @@ PARSER.add_argument('--n_epochs',
                     help='Number of epochs to train.')
 PARSER.add_argument('--n_layers',
                     type=int,
-                    default=1,
+                    default=2,
                     help='Number of layers.')
 PARSER.add_argument('--n_out_channel',
                     type=int,
@@ -121,7 +121,7 @@ eval_interval = 50
 for num_epoch in range(args.n_epochs):
     print(f'Epochs: {num_epoch}')
     for X_batch, y_batch in train_dataloader:
-
+        print(X_batch.shape)
         X_batch = X_batch.to(device)
         y_batch = y_batch.to(device)
         y_pred_batch = cnn_model(X_batch)[:, 0]

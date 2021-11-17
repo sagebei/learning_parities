@@ -1,7 +1,6 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 class CNN(nn.Module):
     def __init__(self,
                  in_channel,
@@ -15,7 +14,7 @@ class CNN(nn.Module):
                               out_channels=out_channel,
                               kernel_size=kernel_size,
                               stride=stride,
-                              padding=1)
+                              padding=0 if n_layers == 1 else 1)
         self.norm_layer = nn.BatchNorm1d(out_channel)
 
         self.conv_layers = nn.ModuleList()
@@ -46,6 +45,7 @@ class CNN(nn.Module):
         out = self.conv(x)
         out = self.norm_layer(out)
         out = F.relu(out)
+        print(out.size())
 
         for conv, norm in zip(self.conv_layers, self.norm_layers):
             out = conv(out)
@@ -53,7 +53,7 @@ class CNN(nn.Module):
             out = F.relu(out)
 
         out = out.view(x.size(0), -1)
+        print(out.size())
         out = self.fc(out)
         return out
-
 
