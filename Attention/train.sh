@@ -31,6 +31,5 @@ python train_self_attention.py --n_elems=60 \
                                --n_heads=3 \
                                --linear_dim=30 \
                                --dropout=0.2 \
-                               --log_folder='results60' \
-                               --num_workers=2
+                               --log_folder='results60'
 done;
