@@ -10,10 +10,10 @@
 
 # Load the necessary modules
 module load python/3.8.5
-module load cudnn/7.6-cuda-10.1
+module load cudnn/8.1.1-cuda11
 
 # Load the virtualenv containing the pytorch package
-source ~/project/venv/bin/activate
+source ~/venv/bin/activate
 
 for n_layer in 1 2 3 4 5 6 7 8 9; do
 python train_mlp.py --n_elems=30 \

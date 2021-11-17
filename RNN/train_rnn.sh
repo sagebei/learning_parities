@@ -10,10 +10,10 @@
 
 # Load the necessary modules
 module load python/3.8.5
-module load cudnn/7.6-cuda-10.1
+module load cudnn/8.1.1-cuda11
 
 # Load the virtualenv containing the pytorch package
-source ~/project/venv/bin/activate
+source ~/venv/bin/activate
 
 python train_rnn.py --n_elems=20 \
                     --n_train_elems=10 \
