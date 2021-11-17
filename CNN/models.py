@@ -45,7 +45,6 @@ class CNN(nn.Module):
         out = self.conv(x)
         out = self.norm_layer(out)
         out = F.relu(out)
-        print(out.size())
 
         for conv, norm in zip(self.conv_layers, self.norm_layers):
             out = conv(out)
@@ -53,7 +52,6 @@ class CNN(nn.Module):
             out = F.relu(out)
 
         out = out.view(x.size(0), -1)
-        print(out.size())
         out = self.fc(out)
         return out
 
