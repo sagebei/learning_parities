@@ -69,6 +69,10 @@ PARSER.add_argument('--dropout',
                     type=float,
                     default=0.0,
                     help='dropout value in linear layers')
+PARSER.add_argument('--batch_size',
+                    type=int,
+                    default=128,
+                    help='batch size')
 PARSER.add_argument('--log_folder',
                     type=str,
                     default='results',
@@ -109,11 +113,10 @@ extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args
                            unique=True,
                            model='cnn')
 
-batch_size = 128
-train_dataloader = DataLoader(train_data, batch_size=batch_size)
+train_dataloader = DataLoader(train_data, batch_size=args.batch_size)
 dataloader_dict = {
-    'validation': DataLoader(val_data, batch_size=batch_size),
-    'extra': DataLoader(extra_data, batch_size=batch_size),
+    'validation': DataLoader(val_data, batch_size=args.batch_size),
+    'extra': DataLoader(extra_data, batch_size=args.batch_size),
 }
 
 
