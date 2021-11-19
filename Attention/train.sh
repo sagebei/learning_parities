@@ -4,8 +4,9 @@
 #$ -j y
 #$ -pe smp 8        # Request cores (8 per GPU)
 #$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
-#$ -l h_rt=24:0:0    # Max 1hr runtime (can request up to 240hr)
+#$ -l h_rt=48:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=1         # Request GPU
+#$ -l cluster=andrena  # Ensure that the job runs on Andrena nodes
 #$ -N attention      # Name for the job (optional)
 
 # Load the necessary modules
@@ -27,9 +28,9 @@ python train_self_attention.py --n_elems=60 \
                                --n_layers=$n_layers \
                                --train_unique='' \
                                --mode='soft' \
-                               --embed_dim=30 \
+                               --embed_dim=9 \
                                --n_heads=3 \
-                               --linear_dim=30 \
-                               --dropout=0.2 \
-                               --log_folder='results60'
+                               --linear_dim=3 \
+                               --dropout=0 \
+                               --log_folder='results60_3'
 done;

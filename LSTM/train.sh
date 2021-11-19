@@ -6,6 +6,7 @@
 #$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
 #$ -l h_rt=48:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=1         # Request GPU
+#$ -l cluster=andrena  # Ensure that the job runs on Andrena nodes
 #$ -N lstm      # Name for the job (optional)
 
 # Load the necessary modules

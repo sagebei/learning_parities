@@ -4,7 +4,7 @@
 #$ -j y
 #$ -pe smp 16        # Request cores (8 per GPU)
 #$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
-#$ -l h_rt=12:0:0    # Max 1hr runtime (can request up to 240hr)
+#$ -l h_rt=24:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=2         # Request GPU
 #$ -N dist_attn      # Name for the job (optional)
 
@@ -27,10 +27,10 @@ python train_self_attention_distributed.py --n_elems=60 \
                                            --n_layers=$n_layers \
                                            --train_unique='' \
                                            --mode='soft' \
-                                           --embed_dim=30 \
+                                           --embed_dim=9 \
                                            --n_heads=3 \
-                                           --linear_dim=30 \
-                                           --dropout=0.2 \
+                                           --linear_dim=9 \
+                                           --dropout=0 \
                                            --log_folder='results_dist60' \
                                            --num_workers=2
 done;
