@@ -155,7 +155,7 @@ if __name__ == '__main__':
                         help='log folder')
     PARSER.add_argument('--num_workers',
                         type=int,
-                        default=2,
+                        default=1,
                         help='number of workers')
 
     args = PARSER.parse_args()
@@ -191,5 +191,5 @@ if __name__ == '__main__':
                                unique=True,
                                model='cnn')
     main(num_workers=args.num_workers,
-         use_gpu=False)
+         use_gpu=True)
 
