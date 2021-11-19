@@ -20,13 +20,12 @@ source ../venv/bin/activate
 set -x 
 SEED=$RANDOM
 
-python train.py \
-	--batch-size 128 \
-	--beta 0.01 \
-	--eval-frequency 4000 \
-	--device cuda \
-	--lambda-p 0.2 \
-	--n-elems 40 \
-	--n-iter 50000 \
-	--n-hidden 128 \
-	results/experiment_b/$SEED
+python train.py --batch-size 128 \
+                --beta 0.01 \
+                --eval-frequency 4000 \
+                --device cuda \
+                --lambda-p 0.2 \
+                --n-elems 40 \
+                --n-iter 50000 \
+                --n-hidden 128 \
+                results/experiment_b/$SEED
