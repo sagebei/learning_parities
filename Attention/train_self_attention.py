@@ -6,6 +6,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from utils import ParityDataset
 from utils import batch_accuracy, dataloader_accuracy
+from utils import CosineWarmupScheduler
 from models import SelfAttentionModel
 import argparse
 
@@ -113,12 +114,6 @@ extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args
                            unique=True,
                            model='cnn')
 
-train_dataloader = DataLoader(train_data, batch_size=args.batch_size)
-dataloader_dict = {
-    'validation': DataLoader(val_data, batch_size=args.batch_size),
-    'extra': DataLoader(extra_data, batch_size=args.batch_size),
-}
-
 
 writer = SummaryWriter(f'{args.log_folder}/{args.embed_dim}_{args.linear_dim}_{args.n_heads}_{args.mode}' +
                        f'_{args.n_elems}_{args.n_train_elems}_{args.n_layers}_{args.n_epochs}' +
@@ -127,6 +122,12 @@ writer = SummaryWriter(f'{args.log_folder}/{args.embed_dim}_{args.linear_dim}_{a
 
 
 def train():
+    train_dataloader = DataLoader(train_data, batch_size=args.batch_size)
+    dataloader_dict = {
+        'validation': DataLoader(val_data, batch_size=args.batch_size),
+        'extra': DataLoader(extra_data, batch_size=args.batch_size),
+    }
+
     selfattention_model = SelfAttentionModel(n_layers=args.n_layers,
                                              seq_len=args.n_elems,
                                              input_dim=3,
@@ -138,7 +139,7 @@ def train():
     selfattention_model = selfattention_model.to(device)
     criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(selfattention_model.parameters(), lr=0.0003)
-
+    lr_scheduler = CosineWarmupScheduler(optimizer, warmup=int(args.n_epochs * 0.1), max_iters=args.n_epochs)
     num_steps = 0
     eval_interval = 50
     for num_epoch in range(args.n_epochs):
@@ -162,6 +163,7 @@ def train():
                     writer.add_scalar(loader_name, val_acc, num_steps)
 
             num_steps += 1
+        lr_scheduler.step()
 
 
 if __name__ == '__main__':
