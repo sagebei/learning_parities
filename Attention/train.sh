@@ -7,7 +7,7 @@
 #$ -l h_rt=48:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=1         # Request GPU
 #$ -l cluster=andrena  # Ensure that the job runs on Andrena nodes
-#$ -N attention      # Name for the job (optional)
+#$ -N attention9      # Name for the job (optional)
 
 # Load the necessary modules
 module load python/3.8.5
@@ -18,19 +18,19 @@ source ~/venv/bin/activate
 
 # run the python script
 for n_layers in 1 2 3 4 5 6 7 8 9 10 11 12 13 15 16; do
-python train_self_attention.py --n_elems=60 \
-                               --n_train_elems=55 \
-                               --n_train_samples=512000 \
+python train_self_attention.py --n_elems=30 \
+                               --n_train_elems=25 \
+                               --n_train_samples=256000 \
                                --n_eval_samples=10000 \
                                --n_exclusive_data=0 \
-                               --n_epochs=100 \
+                               --n_epochs=200 \
                                --batch_size=128 \
                                --n_layers=$n_layers \
                                --train_unique='' \
                                --mode='soft' \
                                --embed_dim=9 \
                                --n_heads=3 \
-                               --linear_dim=3 \
+                               --linear_dim=9 \
                                --dropout=0 \
-                               --log_folder='results60_3'
+                               --log_folder='results30_9'
 done;
