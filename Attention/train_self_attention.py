@@ -119,7 +119,7 @@ extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args
 writer = SummaryWriter(f'{args.log_folder}/{args.embed_dim}_{args.linear_dim}_{args.n_heads}_{args.mode}' +
                        f'_{args.n_elems}_{args.n_train_elems}_{args.n_layers}_{args.n_epochs}' +
                        f'_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}_{args.n_exclusive_data}_0.0005_0.05_0.2')
+                       f'_{args.train_unique}_{args.n_exclusive_data}')
 
 
 def train():

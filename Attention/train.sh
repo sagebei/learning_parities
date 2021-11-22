@@ -32,5 +32,5 @@ python train_self_attention.py --n_elems=30 \
                                --n_heads=3 \
                                --linear_dim=9 \
                                --dropout=0 \
-                               --log_folder='results30_9'
+                               --log_folder='results'
 done;
