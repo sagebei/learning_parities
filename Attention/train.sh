@@ -17,10 +17,10 @@ module load cudnn/8.1.1-cuda11
 source ~/venv/bin/activate
 
 # run the python script
-for n_layers in 1 2 3 4 5 6 7 8 9 10 11 12 13 15 16; do
-python train_self_attention.py --n_elems=30 \
-                               --n_train_elems=25 \
-                               --n_train_samples=256000 \
+for n_layers in 1 2 3 4 5 6 7 8 9 10; do
+python train_self_attention.py --n_elems=15 \
+                               --n_train_elems=10 \
+                               --n_train_samples=128000 \
                                --n_eval_samples=10000 \
                                --n_exclusive_data=0 \
                                --n_epochs=200 \
@@ -32,5 +32,5 @@ python train_self_attention.py --n_elems=30 \
                                --n_heads=3 \
                                --linear_dim=9 \
                                --dropout=0 \
-                               --log_folder='results'
+                               --log_folder='results15'
 done;
