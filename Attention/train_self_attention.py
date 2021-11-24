@@ -57,7 +57,7 @@ PARSER.add_argument('--mode',
                     help='soft or hard')
 PARSER.add_argument('--embed_dim',
                     type=int,
-                    default=36,
+                    default=9,
                     help='embedding dim in the multi-head self attention')
 PARSER.add_argument('--n_heads',
                     type=int,
@@ -65,11 +65,11 @@ PARSER.add_argument('--n_heads',
                     help='Number of attention heads')
 PARSER.add_argument('--linear_dim',
                     type=int,
-                    default=9,
+                    default=3,
                     help='hidden size of the linear layers')
 PARSER.add_argument('--dropout',
                     type=float,
-                    default=0.2,
+                    default=0,
                     help='dropout value in linear layers')
 PARSER.add_argument('--batch_size',
                     type=int,
@@ -119,7 +119,7 @@ extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args
 writer = SummaryWriter(f'{args.log_folder}/{args.embed_dim}_{args.linear_dim}_{args.n_heads}_{args.mode}' +
                        f'_{args.n_elems}_{args.n_train_elems}_{args.n_layers}_{args.n_epochs}' +
                        f'_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}_{args.n_exclusive_data}')
+                       f'_{args.train_unique}_{args.n_exclusive_data}_without_scheduler')
 
 
 def train():
@@ -130,7 +130,6 @@ def train():
     }
 
     selfattention_model = SelfAttentionModel(n_layers=args.n_layers,
-                                             seq_len=args.n_elems,
                                              input_dim=3,
                                              embed_dim=args.embed_dim,
                                              linear_dim=args.linear_dim,
@@ -139,8 +138,8 @@ def train():
                                              mode=args.mode)
     selfattention_model = selfattention_model.to(device)
     criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.Adam(selfattention_model.parameters(), lr=0.0005)
-    lr_scheduler = CosineWarmupScheduler(optimizer, warmup=int(args.n_epochs * 0.05), max_iters=args.n_epochs)
+    optimizer = optim.Adam(selfattention_model.parameters(), lr=0.0003)
+    # lr_scheduler = CosineWarmupScheduler(optimizer, warmup=int(args.n_epochs * 0.05), max_iters=args.n_epochs)
 
     num_steps = 0
     eval_interval = 50
@@ -166,7 +165,7 @@ def train():
 
             num_steps += 1
 
-        lr_scheduler.step()
+        # lr_scheduler.step()
 
 
 if __name__ == '__main__':

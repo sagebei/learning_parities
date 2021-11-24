@@ -91,16 +91,21 @@ class Encoder(nn.Module):
 
 
 class SelfAttentionModel(nn.Module):
-    def __init__(self, n_layers, seq_len, **block_args):
+    def __init__(self, n_layers, input_dim, embed_dim, linear_dim, dropout, n_heads, mode):
         super().__init__()
-        self.layers = nn.ModuleList([Encoder(**block_args) for _ in range(n_layers)])
-        self.mlp = nn.Linear(seq_len, 1)
+        self.layers = nn.ModuleList([Encoder(input_dim=input_dim,
+                                             embed_dim=embed_dim,
+                                             linear_dim=linear_dim,
+                                             dropout=dropout,
+                                             n_heads=n_heads,
+                                             mode=mode) for _ in range(n_layers)])
+        self.mlp = nn.Linear(input_dim, 1)
 
     def forward(self, x):
         for layer in self.layers:
             x = layer(x)
 
-        out, _ = x.max(dim=-1)
+        out, _ = x.max(dim=1)
         out = self.mlp(out)
 
         return out
