@@ -14,7 +14,7 @@ module load python/3.8.5
 module load cudnn/7.6-cuda-10.1
 
 # Load the virtualenv containing the pytorch package
-source ../venv/bin/activate
+source ~/venv/bin/activate
 
 # run the python script
 for n_train_samples in 128000 256000 512000 768000; do
