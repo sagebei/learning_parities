@@ -1,94 +1,100 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
-from tqdm import tqdm
-from typing import Tuple
+from os.path import exists
 
 
 class ParityDataset(Dataset):
-    def __init__(self, n_samples: int,
-                 n_elems: int,
-                 n_nonzero_min=None,
-                 n_nonzero_max=None,
-                 exclude_dataset=None):
+    def __init__(
+        self,
+        n_samples,
+        n_elems,
+        n_nonzero_min=None,
+        n_nonzero_max=None,
+        exclude_dataset=None,
+        unique=False,
+        model='rnn',
+        data_augmentation=0,
+    ):
         self.n_samples = n_samples
         self.n_elems = n_elems
-        self.n_nonzero_min = 1 if n_nonzero_min is None else n_nonzero_min
-        self.n_nonzero_max = n_elems if n_nonzero_max is None else n_nonzero_max
 
-        if exclude_dataset is not None:
-            self.val_data = set(exclude_dataset.X)
-        else:
-            self.val_data = set()
+        self.n_nonzero_min = 1 if n_nonzero_min is None else n_nonzero_min
+        self.n_nonzero_max = (
+            n_elems if n_nonzero_max is None else n_nonzero_max
+        )
+
+        self.model = model
+        self.data_augmentation = data_augmentation
+        self.unique = unique
+        self.unique_set = set()
+        self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
 
         self.X, self.Y = [], []
-        self.build_dataset()
+        dataset_path = f"../datasets/{n_samples}_{n_elems}_{n_nonzero_max}_{n_nonzero_min}_{unique}_{model}.pt"
+        if exists(dataset_path):
+            self.X, self.Y = torch.load(dataset_path)
+        elif self.n_samples > 0:
+            if not exists('../datasets'):
+                os.mkdir('../datasets')
+            self.build_dataset()
+            torch.save([self.X, self.Y], dataset_path)
 
-    def __len__(self) -> int:
+    def __len__(self):
         return self.n_samples
 
     def generate_data(self):
         while True:
             x = torch.zeros((self.n_elems,))
-            n_non_zero = torch.randint(self.n_nonzero_min, self.n_nonzero_max + 1, (1,)).item()
+            n_non_zero = torch.randint(
+                self.n_nonzero_min, self.n_nonzero_max + 1, (1,)
+            ).item()
             x[:n_non_zero] = torch.randint(0, 2, (n_non_zero,)) * 2 - 1
             x = x[torch.randperm(self.n_elems)]
+
             y = (x == 1.0).sum() % 2
 
-            item = tuple(x.tolist())
-            if item not in self.val_data:
-                return x, y.float()
+            item = tuple(x.detach().clone().tolist())
+            if self.unique:
+                if (item not in self.val_set) and (item not in self.unique_set):
+                    return x, y.item(), item
+            else:
+                if item not in self.val_set:
+                    return x, y.item(), item
 
     def build_dataset(self):
         print('Building dataset ...')
-        iterator = tqdm(range(self.n_samples), total=self.n_samples)
-        for _ in iterator:
-            x, y = self.generate_data()
+        for _ in range(self.n_samples):
+            x, y, item = self.generate_data()
             self.X.append(x)
             self.Y.append(y)
+            self.unique_set.add(item)
+
+        if self.data_augmentation > 0:
+            n_aug = int(self.data_augmentation * self.n_samples)
+            self.X += self.X[:n_aug]
+            self.Y += self.Y[:n_aug]
+            self.n_samples += n_aug
+
+        self.Y = torch.Tensor(self.Y).float()
+        if self.model == 'rnn':
+            self.X = torch.stack(self.X).float().unsqueeze(dim=-1)
+        elif self.model == 'mlp':
+            self.X = torch.stack(self.X).float()
+        elif self.model == 'cnn':
+            self.X = torch.stack(self.X).to(torch.int64) + 1
+            self.X = F.one_hot(self.X, num_classes=3).float()
+
+        perm_index = torch.randperm(self.X.size()[0])
+        self.X = self.X[perm_index]
+        self.Y = self.Y[perm_index]
 
     def __getitem__(self, index):
         return self.X[index], self.Y[index]
 
 
-
-
 class PonderNet(nn.Module):
-    """Network that ponders.
-
-    Parameters
-    ----------
-    n_elems : int
-        Number of features in the vector.
-
-    n_hidden : int
-        Hidden layer size of the recurrent cell.
-
-    max_steps : int
-        Maximum number of steps the network can "ponder" for.
-
-    allow_halting : bool
-        If True, then the forward pass is allowed to halt before
-        reaching the maximum steps.
-
-    Attributes
-    ----------
-    cell : nn.GRUCell
-        Learnable GRU cell that maps the previous hidden state and the input
-        to a new hidden state.
-
-    output_layer : nn.Linear
-        Linear module that serves as the binary classifier. It inputs
-        the hidden state.
-
-    lambda_layer : nn.Linear
-        Linear module that generates the halting probability at each step.
-
-    """
-
-    def __init__(
-        self, n_elems, n_hidden=64, max_steps=20, allow_halting=False
-    ):
+    def __init__(self, n_elems, n_hidden=64, max_steps=20, allow_halting=False):
         super().__init__()
 
         self.max_steps = max_steps
@@ -100,32 +106,6 @@ class PonderNet(nn.Module):
         self.lambda_layer = nn.Linear(n_hidden, 1)
 
     def forward(self, x):
-        """Run forward pass.
-
-        Parameters
-        ----------
-        x : torch.Tensor
-            Batch of input features of shape `(batch_size, n_elems)`.
-
-        Returns
-        -------
-        y : torch.Tensor
-            Tensor of shape `(max_steps, batch_size)` representing
-            the predictions for each step and each sample. In case
-            `allow_halting=True` then the shape is
-            `(steps, batch_size)` where `1 <= steps <= max_steps`.
-
-        p : torch.Tensor
-            Tensor of shape `(max_steps, batch_size)` representing
-            the halting probabilities. Sums over rows (fixing a sample)
-            are 1. In case `allow_halting=True` then the shape is
-            `(steps, batch_size)` where `1 <= steps <= max_steps`.
-
-        halting_step : torch.Tensor
-            An integer for each sample in the batch that corresponds to
-            the step when it was halted. The shape is `(batch_size,)`. The
-            minimal value is 1 because we always run at least one step.
-        """
         batch_size, _ = x.shape
         device = x.device
 
@@ -136,28 +116,19 @@ class PonderNet(nn.Module):
         y_list = []
         p_list = []
 
-        halting_step = torch.zeros(
-            batch_size,
-            dtype=torch.long,
-            device=device,
-        )
+        halting_step = torch.zeros(batch_size, dtype=torch.long, device=device)
 
         for n in range(1, self.max_steps + 1):
             if n == self.max_steps:
                 lambda_n = x.new_ones(batch_size)  # (batch_size,)
             else:
-                lambda_n = torch.sigmoid(self.lambda_layer(h))[
-                    :, 0
-                ]  # (batch_size,)
+                lambda_n = torch.sigmoid(self.lambda_layer(h))[:, 0]  # (batch_size,)
 
-            # Store releavant outputs
             y_list.append(self.output_layer(h)[:, 0])  # (batch_size,)
             p_list.append(un_halted_prob * lambda_n)  # (batch_size,)
 
             halting_step = torch.maximum(
-                n
-                * (halting_step == 0)
-                * torch.bernoulli(lambda_n).to(torch.long),
+                n * (halting_step == 0) * torch.bernoulli(lambda_n).to(torch.long),
                 halting_step,
             )
 
@@ -176,15 +147,6 @@ class PonderNet(nn.Module):
 
 
 class ReconstructionLoss(nn.Module):
-    """Weighted average of per step losses.
-
-    Parameters
-    ----------
-    loss_func : callable
-        Loss function that accepts `y_pred` and `y_true` as arguments. Both
-        of these tensors have shape `(batch_size,)`. It outputs a loss for
-        each sample in the batch.
-    """
 
     def __init__(self, loss_func):
         super().__init__()
@@ -192,25 +154,6 @@ class ReconstructionLoss(nn.Module):
         self.loss_func = loss_func
 
     def forward(self, p, y_pred, y_true):
-        """Compute loss.
-
-        Parameters
-        ----------
-        p : torch.Tensor
-            Probability of halting of shape `(max_steps, batch_size)`.
-
-        y_pred : torch.Tensor
-            Predicted outputs of shape `(max_steps, batch_size)`.
-
-        y_true : torch.Tensor
-            True targets of shape `(batch_size,)`.
-
-        Returns
-        -------
-        loss : torch.Tensor
-            Scalar representing the reconstruction loss. It is nothing else
-            than a weighted sum of per step losses.
-        """
         max_steps, _ = p.shape
         total_loss = p.new_tensor(0.0)
 
@@ -224,18 +167,6 @@ class ReconstructionLoss(nn.Module):
 
 
 class RegularizationLoss(nn.Module):
-    """Enforce halting distribution to ressemble the geometric distribution.
-
-    Parameters
-    ----------
-    lambda_p : float
-        The single parameter determining uniquely the geometric distribution.
-        Note that the expected value of this distribution is going to be
-        `1 / lambda_p`.
-
-    max_steps : int
-        Maximum number of pondering steps.
-    """
 
     def __init__(self, lambda_p, max_steps=20):
         super().__init__()
@@ -251,18 +182,7 @@ class RegularizationLoss(nn.Module):
         self.kl_div = nn.KLDivLoss(reduction="batchmean")
 
     def forward(self, p):
-        """Compute loss.
 
-        Parameters
-        ----------
-        p : torch.Tensor
-            Probability of halting of shape `(steps, batch_size)`.
-
-        Returns
-        -------
-        loss : torch.Tensor
-            Scalar representing the regularization loss.
-        """
         steps, batch_size = p.shape
 
         p = p.transpose(0, 1)  # (batch_size, max_steps)
