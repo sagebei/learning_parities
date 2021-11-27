@@ -17,12 +17,12 @@ module load cudnn/7.6-cuda-10.1
 source ~/venv/bin/activate
 
 # run the python script
-for n_train_samples in 128000 256000 512000 768000; do
+for n_train_samples in 256000 512000 768000; do
 python train.py --n_elems=15 \
                 --n_train_elems=10 \
                 --n_train_samples=$n_train_samples \
                 --n_eval_samples=10000 \
-                --n_epochs=2000 \
+                --n_epochs=1000 \
                 --train_unique='' \
                 --n_exclusive_data=0 \
                 --data_augmentation=0 \

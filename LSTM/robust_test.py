@@ -1,19 +1,10 @@
 import torch
-import torch.nn as nn
-import torch.optim as optim
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
-
+import matplotlib.pyplot as plt
 from utils import ParityDataset
-from utils import batch_accuracy, dataloader_accuracy
-from models import LSTM
+from utils import dataloader_accuracy
 import argparse
 
-import numpy as np
-import random
-random.seed(0)
-np.random.seed(0)
-torch.manual_seed(0)
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
@@ -100,45 +91,30 @@ dataloader_dict = {
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
-input_size = 1
-hidden_size = 128
-num_layers = args.n_layers
-learning_rate = 0.0003
-eval_interval = 50
-lstm_model = LSTM(input_size=input_size,
-                  hidden_size=hidden_size,
-                  num_layers=num_layers)
+lstm_model = torch.load(f'{args.n_elems}.pt')
 lstm_model = lstm_model.to(device)
 
-criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
-writer = SummaryWriter(f'{args.log_folder}/lstm{args.n_elems}_{args.n_train_elems}' +
-                       f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}-{args.n_exclusive_data}-{args.data_augmentation}')
+noise_scale = [i * 0.01 for i in range(20)]
+train_acc = []
+val_acc = []
+extra_acc = []
+for scale in noise_scale:
+    with torch.no_grad():
+        for param in lstm_model.parameters():
+            noise = torch.randn(param.size()).to(device)
+            param.add_(noise * scale)
 
+        acc = dataloader_accuracy(train_dataloader, lstm_model)
+        train_acc.append(acc)
+        for loader_name, loader in dataloader_dict.items():
+            v_acc = dataloader_accuracy(loader, lstm_model)
+            if loader_name == 'validation':
+                val_acc.append(v_acc)
+            elif loader_name == 'extra':
+                extra_acc.append(v_acc)
 
-num_steps = 0
-for num_epoch in range(args.n_epochs):
-    print(f'Epochs: {num_epoch}')
-    for X_batch, y_batch in train_dataloader:
-
-        X_batch = X_batch.to(device)
-        y_batch = y_batch.to(device)
-        y_pred_batch = lstm_model(X_batch)[:, 0]
-        train_batch_acc = batch_accuracy(y_pred_batch, y_batch)
-        writer.add_scalar('train_batch_accuracy', train_batch_acc, num_steps)
-
-        loss = criterion(y_pred_batch, y_batch)
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        if (num_steps % eval_interval) == 0:
-            for loader_name, loader in dataloader_dict.items():
-                val_acc = dataloader_accuracy(loader, lstm_model)
-                writer.add_scalar(loader_name, val_acc, num_steps)
-
-        num_steps += 1
-
-torch.save(lstm_model, f'{args.n_elems}.pt')
+plt.plot(noise_scale, train_acc)
+plt.plot(noise_scale, val_acc)
+plt.plot(noise_scale, extra_acc)
+plt.show()
 
