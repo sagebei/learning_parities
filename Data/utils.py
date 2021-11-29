@@ -33,7 +33,9 @@ class ParityDataset(Dataset):
         self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
 
         self.X, self.Y = [], []
-        self.build_dataset()
+
+        if self.n_samples > 0:
+            self.build_dataset()
 
     def __len__(self):
         return self.n_samples
