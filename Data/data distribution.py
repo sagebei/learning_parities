@@ -1,6 +1,13 @@
 import matplotlib.pyplot as plt
+import matplotlib
 from collections import Counter
 import numpy as np
+
+font = {'family': 'normal',
+        'weight': 'normal',
+        'size': 12}
+
+matplotlib.rc('font', **font)
 
 n_samples = 100000
 n_features = 30
@@ -21,8 +28,10 @@ for i in range(0, n_features):
 plt.xlabel('Number of 1s')
 plt.ylabel('Number of data samples')
 
-plt.plot(index, l1, linewidth=2, label='approach 1')
-plt.plot(index, l2, linewidth=2, label='approach 2')
+plt.plot(index, l1, linewidth=2, label='Normal Approach')
+plt.plot(index, l2, linewidth=2, label='Uniform Approach')
 plt.tight_layout()
 leg = plt.legend(loc='best', frameon=False)
+
+plt.savefig('data_generation.jpg')
 plt.show()

@@ -26,5 +26,5 @@ python train_lstm.py --n_elems=30 \
                      --train_unique='' \
                      --n_exclusive_data=0 \
                      --data_augmentation=$data_augmentation \
-                     --log_folder='results'
+                     --log_folder='results1'
 done;

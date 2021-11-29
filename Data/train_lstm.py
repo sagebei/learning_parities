@@ -11,9 +11,9 @@ import argparse
 
 import numpy as np
 import random
-random.seed(0)
-np.random.seed(0)
-torch.manual_seed(0)
+random.seed(42)
+np.random.seed(42)
+torch.manual_seed(42)
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
