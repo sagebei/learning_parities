@@ -91,7 +91,7 @@ dataloader_dict = {
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
-lstm_model = torch.load(f'{args.n_elems}.pt')
+lstm_model = torch.load(f'models/{args.n_elems}.pt')
 lstm_model = lstm_model.to(device)
 
 noise_scale = [i * 0.01 for i in range(20)]

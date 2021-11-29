@@ -140,5 +140,5 @@ for num_epoch in range(args.n_epochs):
 
         num_steps += 1
 
-torch.save(lstm_model, f'{args.n_elems}.pt')
+torch.save(lstm_model, f'models/{args.n_elems}.pt')
 

@@ -92,7 +92,7 @@ extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args
                            model='cnn')
 
 batch_size = 128
-train_dataloader = DataLoader(train_data, batch_size=batch_size)
+train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 dataloader_dict = {
     'validation': DataLoader(val_data, batch_size=batch_size),
     'extra': DataLoader(extra_data, batch_size=batch_size),
