@@ -51,7 +51,7 @@ class ParityDataset(Dataset):
 
             # parity with noise
             # x[:n_non_zero] = torch.randint(0, 2, (n_non_zero,)) * 2 - 1
-            # x = x[torch.randperm(self.n_elems)]
+            x = x[torch.randperm(self.n_elems)]
 
             # x = torch.randint(0, 2, (self.n_elems,))
 
