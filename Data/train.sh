@@ -16,7 +16,6 @@ module load cudnn/8.1.1-cuda11
 # Load the virtualenv containing the pytorch package
 source ~/venv/bin/activate
 
-for data_augmentation in 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8; do
 python train_lstm.py --n_elems=30 \
                      --n_train_elems=30 \
                      --n_train_samples=100000 \
@@ -25,6 +24,5 @@ python train_lstm.py --n_elems=30 \
                      --n_layers=1 \
                      --train_unique='' \
                      --n_exclusive_data=0 \
-                     --data_augmentation=$data_augmentation \
+                     --data_augmentation=0 \
                      --log_folder='results1'
-done;

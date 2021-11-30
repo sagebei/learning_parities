@@ -47,13 +47,13 @@ class ParityDataset(Dataset):
                 self.n_nonzero_min, self.n_nonzero_max + 1, (1,)
             ).item()
             # parity
-            # x[:n_non_zero] = 1.0
+            x[:n_non_zero] = 1.0
 
             # parity with noise
             # x[:n_non_zero] = torch.randint(0, 2, (n_non_zero,)) * 2 - 1
             # x = x[torch.randperm(self.n_elems)]
 
-            x = torch.randint(0, 2, (self.n_elems,))
+            # x = torch.randint(0, 2, (self.n_elems,))
 
             y = (x == 1.0).sum() % 2
 

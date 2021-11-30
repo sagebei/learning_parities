@@ -116,7 +116,7 @@ criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
 writer = SummaryWriter(f'{args.log_folder}/lstm{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}-{args.n_exclusive_data}-{args.data_augmentation}_aug')
+                       f'_{args.train_unique}-{args.n_exclusive_data}-{args.data_augmentation}_uniform')
 
 
 num_steps = 0
