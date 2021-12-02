@@ -3,20 +3,21 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-
-from parityfunction.utils import ParityDataset
-from parityfunction.utils import batch_accuracy, dataloader_accuracy
+from utils import ParityDataset
+from utils import batch_accuracy, dataloader_accuracy
 from models import LSTM
 import argparse
+import random
+import numpy as np
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
                     type=int,
-                    default=20,
+                    default=30,
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=15,
+                    default=25,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
@@ -113,21 +114,18 @@ dataloader_dict = {
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
-input_size = 1
-hidden_size = 128
-num_layers = args.n_layers
 learning_rate = 0.0003
 eval_interval = 50
-lstm_model = LSTM(input_size=input_size,
-                  hidden_size=hidden_size,
-                  num_layers=num_layers)
+lstm_model = LSTM(input_size=1,
+                  hidden_size=128,
+                  num_layers=args.n_layers)
 lstm_model = lstm_model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
 writer = SummaryWriter(f'{args.log_folder}/lstm{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}-{args.n_exclusive_data}-{args.data_augmentation}')
+                       f'_{args.train_unique}_{args.n_exclusive_data}_{args.data_augmentation}_{args.noise}_{args.seed}')
 
 
 num_steps = 0
@@ -152,6 +150,4 @@ for num_epoch in range(args.n_epochs):
                 writer.add_scalar(loader_name, val_acc, num_steps)
 
         num_steps += 1
-
-torch.save(lstm_model, f'models/{args.n_elems}_{args.noise}.pt')
 
