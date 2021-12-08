@@ -17,7 +17,7 @@ module load cudnn/8.1.1-cuda11
 source ~/venv/bin/activate
 python parity_task.py --n_elems=30 \
                       --n_train_elems=30 \
-                      --n_train_samples=256000 \
+                      --n_train_samples=128000 \
                       --n_eval_samples=10000 \
                       --batch_size=128 \
                       --memory_size=30 \

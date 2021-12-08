@@ -29,15 +29,15 @@ PARSER.add_argument('--n_eval_samples',
                     help='number of evaluation samples')
 PARSER.add_argument('--n_epochs',
                     type=int,
-                    default=200,
+                    default=100,
                     help='Number of epochs to train.')
 PARSER.add_argument('--memory_size',
                     type=int,
-                    default=30,
+                    default=20,
                     help='memory_size')
 PARSER.add_argument('--learning_rate',
                     type=float,
-                    default=0.0001,
+                    default=0.0003,
                     help='learning_rate')
 PARSER.add_argument('--batch_size',
                     type=int,
@@ -127,8 +127,7 @@ def train():
             state = model.get_initial_state(batch_size=args.batch_size)
             for vector in input:
                 vector = vector.to(device)
-                _, state = model(vector, state)
-            output, _ = model(torch.zeros(args.batch_size, vector_length + 1).to(device), state)
+                output, state = model(vector, state)
 
             loss = criterion(output, target)
             loss.backward()

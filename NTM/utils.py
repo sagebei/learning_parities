@@ -102,8 +102,7 @@ def dataloader_accuracy(dataloader, model, args):
 
             state = model.get_initial_state(batch_size=args.batch_size)
             for vector in input:
-                _, state = model(vector, state)
-            output, _ = model(torch.zeros(args.batch_size, 1 + 1).to(device), state)
+                output, state = model(vector, state)
 
             batch_acc = batch_accuracy(output.view(-1), target.view(-1))
             accuracy.append(batch_acc)
