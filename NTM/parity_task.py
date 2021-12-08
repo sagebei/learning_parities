@@ -37,8 +37,8 @@ PARSER.add_argument('--memory_size',
                     help='memory_size')
 PARSER.add_argument('--learning_rate',
                     type=float,
-                    default=128,
-                    help='batch_size')
+                    default=0.0001,
+                    help='learning_rate')
 PARSER.add_argument('--batch_size',
                     type=int,
                     default=128,
@@ -98,7 +98,7 @@ print(device)
 
 
 def train():
-    writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.n_train_elems}_'
+    writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.n_train_elems}_{args.n_train_samples}_'
                            f'{args.learning_rate}_{args.memory_size}_' +
                            f'{args.n_epochs}_{args.batch_size}_{args.noise}_{args.seed}')
 

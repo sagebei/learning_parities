@@ -7,7 +7,7 @@
 #$ -l h_rt=48:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=1         # Request GPU
 #$ -l cluster=andrena  # Ensure that the job runs on Andrena nodes
-#$ -N ntm      # Name for the job (optional)
+#$ -N ntm30      # Name for the job (optional)
 
 # Load the necessary modules
 module load python/3.8.5
@@ -17,12 +17,12 @@ module load cudnn/8.1.1-cuda11
 source ~/venv/bin/activate
 python parity_task.py --n_elems=30 \
                       --n_train_elems=30 \
-                      --n_train_samples=128000 \
+                      --n_train_samples=256000 \
                       --n_eval_samples=10000 \
                       --batch_size=128 \
                       --memory_size=30 \
-                      --learning_rate=0.0001 \
-                      --n_epochs=50 \
+                      --learning_rate=0.0003 \
+                      --n_epochs=100 \
                       --noise='.' \
                       --seed=0 \
                       --log_folder='results'
