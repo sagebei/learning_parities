@@ -99,7 +99,7 @@ print(device)
 
 def train():
     writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.n_train_elems}_'
-                           f'{args.learing_rate}_{args.memory_size}_' +
+                           f'{args.learning_rate}_{args.memory_size}_' +
                            f'{args.n_epochs}_{args.batch_size}_{args.noise}_{args.seed}')
 
     model = NTM(vector_length=vector_length,
