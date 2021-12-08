@@ -31,13 +31,21 @@ PARSER.add_argument('--n_epochs',
                     type=int,
                     default=200,
                     help='Number of epochs to train.')
+PARSER.add_argument('--memory_size',
+                    type=int,
+                    default=30,
+                    help='memory_size')
+PARSER.add_argument('--learning_rate',
+                    type=float,
+                    default=128,
+                    help='batch_size')
 PARSER.add_argument('--batch_size',
                     type=int,
                     default=128,
                     help='batch_size')
 PARSER.add_argument('--noise',
                     type=bool,
-                    default='',
+                    default='.',
                     help='add noise to the parity data')
 PARSER.add_argument('--seed',
                     type=int,
@@ -90,16 +98,17 @@ print(device)
 
 
 def train():
-    writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.n_train_elems}_' +
+    writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.n_train_elems}_'
+                           f'{args.learing_rate}_{args.memory_size}_' +
                            f'{args.n_epochs}_{args.batch_size}_{args.noise}_{args.seed}')
 
     model = NTM(vector_length=vector_length,
                 hidden_size=128,
-                memory_size=(args.batch_size, 20),
+                memory_size=(args.batch_size, args.memory_size),
                 lstm_controller=True)
     model.to(device)
     criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.RMSprop(model.parameters(), momentum=0.9, alpha=0.95, lr=3e-4)
+    optimizer = optim.RMSprop(model.parameters(), momentum=0.9, alpha=0.95, lr=args.learning_rate)
     feedback_frequency = 100
     training_step = 0
     for epoch in range(args.n_epochs):
