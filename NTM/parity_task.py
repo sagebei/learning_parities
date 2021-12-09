@@ -33,7 +33,7 @@ PARSER.add_argument('--n_epochs',
                     help='Number of epochs to train.')
 PARSER.add_argument('--memory_size',
                     type=int,
-                    default=20,
+                    default=10,
                     help='memory_size')
 PARSER.add_argument('--learning_rate',
                     type=float,
@@ -104,12 +104,12 @@ def train():
 
     model = NTM(vector_length=vector_length,
                 hidden_size=128,
-                memory_size=(args.batch_size, args.memory_size),
+                memory_size=(128, args.memory_size),
                 lstm_controller=True)
     model.to(device)
     criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.RMSprop(model.parameters(), momentum=0.9, alpha=0.95, lr=args.learning_rate)
-    feedback_frequency = 100
+    feedback_frequency = 50
     training_step = 0
     for epoch in range(args.n_epochs):
         for X_batch, y_batch in train_dataloader:
@@ -121,16 +121,19 @@ def train():
 
             input = torch.zeros(args.n_elems + 1, args.batch_size, vector_length + 1).to(device)
             input[:args.n_elems, :, :vector_length] = X_batch.transpose(0, 1)
+            # add delimiter vector
             input[args.n_elems, :, vector_length] = 1.0
             target = y_batch.unsqueeze(dim=1)
 
             state = model.get_initial_state(batch_size=args.batch_size)
             for vector in input:
-                vector = vector.to(device)
                 output, state = model(vector, state)
+            # output, _ = model(torch.zeros(args.batch_size, vector_length + 1).to(device), state)
 
             loss = criterion(output, target)
             loss.backward()
+            # all gradient components are clipped elementwise to the range (-10, 10).
+            torch.nn.utils.clip_grad_value_(model.parameters(), clip_value=10)
             optimizer.step()
 
             writer.add_scalar('training loss', loss, training_step)
