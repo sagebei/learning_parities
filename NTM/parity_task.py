@@ -37,7 +37,7 @@ PARSER.add_argument('--memory_size',
                     help='memory_size')
 PARSER.add_argument('--learning_rate',
                     type=float,
-                    default=0.0003,
+                    default=0.0005,
                     help='learning_rate')
 PARSER.add_argument('--batch_size',
                     type=int,
