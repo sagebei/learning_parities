@@ -44,6 +44,10 @@ PARSER.add_argument('--train_unique',
                     type=bool,
                     default='',
                     help='if the training dataset contains duplicated data.')
+PARSER.add_argument('--noise',
+                    type=bool,
+                    default='',
+                    help='if add noise to the parity data')
 PARSER.add_argument('--log_folder',
                     type=str,
                     default='results',
@@ -60,21 +64,24 @@ train_data = ParityDataset(n_samples=args.n_train_samples,
                            n_nonzero_max=args.n_train_elems,
                            exclude_dataset=None,
                            unique=args.train_unique,
-                           model='rnn')
+                           model='rnn',
+                           noise=args.noise)
 val_data = ParityDataset(n_samples=args.n_eval_samples,
                          n_elems=args.n_elems,
                          n_nonzero_min=1,
                          n_nonzero_max=args.n_train_elems,
                          exclude_dataset=train_data,
                          unique=True,
-                         model='rnn')
+                         model='rnn',
+                         noise=args.noise)
 extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args.n_train_elems else 0,
                            n_elems=args.n_elems,
                            n_nonzero_min=args.n_train_elems,
                            n_nonzero_max=args.n_elems,
                            exclude_dataset=None,
                            unique=True,
-                           model='rnn')
+                           model='rnn',
+                           noise=args.noise)
 
 batch_size = 128
 train_dataloader = DataLoader(train_data, batch_size=batch_size)
@@ -95,7 +102,7 @@ criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(rnn_model.parameters(), lr=0.0003)
 writer = SummaryWriter(f'{args.log_folder}/rnn{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}')
+                       f'_{args.train_unique}_{args.noise}')
 
 eval_interval = 50
 num_steps = 0
@@ -121,5 +128,5 @@ for num_epoch in range(args.n_epochs):
 
         num_steps += 1
 
-torch.save(rnn_model, f'models/{args.n_elems}.pt')
+torch.save(rnn_model, f'models/{args.n_elems}_{args.noise}.pt')
 

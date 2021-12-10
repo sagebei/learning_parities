@@ -18,11 +18,11 @@ torch.manual_seed(0)
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
                     type=int,
-                    default=15,
+                    default=20,
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=10,
+                    default=15,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
@@ -44,9 +44,9 @@ PARSER.add_argument('--train_unique',
                     type=bool,
                     default='',
                     help='if the training dataset contains duplicated data.')
-PARSER.add_argument('--data_augmentation',
-                    type=float,
-                    default=0,
+PARSER.add_argument('--noise',
+                    type=bool,
+                    default='',
                     help='Augment the dataset by the specified ratio')
 PARSER.add_argument('--log_folder',
                     type=str,
@@ -64,21 +64,23 @@ train_data = ParityDataset(n_samples=args.n_train_samples,
                            exclude_dataset=None,
                            unique=args.train_unique,
                            model='rnn',
-                           data_augmentation=args.data_augmentation)
+                           noise=args.noise)
 val_data = ParityDataset(n_samples=args.n_eval_samples,
                          n_elems=args.n_elems,
                          n_nonzero_min=1,
                          n_nonzero_max=args.n_train_elems,
                          exclude_dataset=train_data,
                          unique=True,
-                         model='rnn')
+                         model='rnn',
+                         noise=args.noise)
 extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args.n_train_elems else 0,
                            n_elems=args.n_elems,
                            n_nonzero_min=args.n_train_elems,
                            n_nonzero_max=args.n_elems,
                            exclude_dataset=None,
                            unique=True,
-                           model='rnn')
+                           model='rnn',
+                           noise=args.noise)
 
 batch_size = 128
 train_dataloader = DataLoader(train_data, batch_size=batch_size)
@@ -103,7 +105,7 @@ criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
 writer = SummaryWriter(f'{args.log_folder}/lstm{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}-{args.data_augmentation}')
+                       f'_{args.train_unique}_{args.noise}')
 
 
 num_steps = 0
@@ -129,5 +131,5 @@ for num_epoch in range(args.n_epochs):
 
         num_steps += 1
 
-torch.save(lstm_model, f'models/{args.n_elems}.pt')
+torch.save(lstm_model, f'models/{args.n_elems}_{args.noise}.pt')
 

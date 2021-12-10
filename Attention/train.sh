@@ -9,27 +9,25 @@
 #$ -l cluster=andrena  # Ensure that the job runs on Andrena nodes
 #$ -N attention9      # Name for the job (optional)
 
-# Load the necessary modules
-module load python/3.8.5
-module load cudnn/8.1.1-cuda11
-
-# Load the virtualenv containing the pytorch package
-source ~/venv/bin/activate
+## Load the necessary modules
+#module load python/3.8.5
+#module load cudnn/8.1.1-cuda11
+#
+## Load the virtualenv containing the pytorch package
+#source ~/venv/bin/activate
 
 # run the python script
-for n_layers in 1 2 3 4 5 6 7 8 9 10; do
-python train_self_attention.py --n_elems=15 \
-                               --n_train_elems=10 \
+python train_self_attention.py --n_elems=20 \
+                               --n_train_elems=15 \
                                --n_train_samples=128000 \
                                --n_eval_samples=10000 \
-                               --n_epochs=200 \
+                               --n_epochs=100 \
                                --batch_size=128 \
-                               --n_layers=$n_layers \
+                               --n_layers=4 \
                                --train_unique='' \
                                --mode='soft' \
-                               --embed_dim=9 \
+                               --embed_dim=36 \
                                --n_heads=3 \
-                               --linear_dim=9 \
+                               --linear_dim=3 \
                                --dropout=0 \
-                               --log_folder='results15'
-done;
+                               --log_folder='results'

@@ -24,6 +24,10 @@ PARSER.add_argument('--n_train_samples',
                     type=int,
                     default=128000,
                     help='number of training samples.')
+PARSER.add_argument('--noise',
+                    type=bool,
+                    default='',
+                    help='number of training samples.')
 
 
 args = PARSER.parse_args()
@@ -45,7 +49,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
 
-lstm_model = torch.load(f'models/15.pt').to(device)
+lstm_model = torch.load(f'models/20_{args.noise}.pt').to(device)
 acc = dataloader_accuracy(train_dataloader, lstm_model)
 print(acc)
 

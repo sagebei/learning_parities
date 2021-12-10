@@ -16,7 +16,7 @@ class ParityDataset(Dataset):
         exclude_dataset=None,
         unique=False,
         model='rnn',
-        data_augmentation=0,
+        noise=True,
     ):
         self.n_samples = n_samples
         self.n_elems = n_elems
@@ -27,7 +27,7 @@ class ParityDataset(Dataset):
         )
 
         self.model = model
-        self.data_augmentation = data_augmentation
+        self.noise = noise
         self.unique = unique
         self.unique_set = set()
         self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
@@ -51,7 +51,12 @@ class ParityDataset(Dataset):
             n_non_zero = torch.randint(
                 self.n_nonzero_min, self.n_nonzero_max + 1, (1,)
             ).item()
-            x[:n_non_zero] = torch.randint(0, 2, (n_non_zero,)) * 2 - 1
+
+            if self.noise:
+                x[:n_non_zero] = torch.randint(0, 2, (n_non_zero,)) * 2 - 1
+            else:
+                x[:n_non_zero] = 1.0
+
             x = x[torch.randperm(self.n_elems)]
 
             y = (x == 1.0).sum() % 2
@@ -71,12 +76,6 @@ class ParityDataset(Dataset):
             self.X.append(x)
             self.Y.append(y)
             self.unique_set.add(item)
-
-        if self.data_augmentation > 0:
-            n_aug = int(self.data_augmentation * self.n_samples)
-            self.X += self.X[:n_aug]
-            self.Y += self.Y[:n_aug]
-            self.n_samples += n_aug
 
         self.Y = torch.Tensor(self.Y).float()
         if self.model == 'rnn':

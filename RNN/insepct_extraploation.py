@@ -14,15 +14,19 @@ torch.manual_seed(0)
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
                     type=int,
-                    default=20,
+                    default=6000,
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=15,
+                    default=6000,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
-                    default=12800,
+                    default=1280,
+                    help='number of training samples.')
+PARSER.add_argument('--noise',
+                    type=bool,
+                    default='',
                     help='number of training samples.')
 
 
@@ -34,18 +38,16 @@ train_data = ParityDataset(n_samples=args.n_train_samples,
                            n_nonzero_min=1,
                            n_nonzero_max=args.n_train_elems,
                            exclude_dataset=None,
-                           unique=False,
+                           unique=True,  # All the data are unique!
                            model='rnn',
-                           data_augmentation=0)
+                           noise=False)
 
-
-batch_size = 128
-train_dataloader = DataLoader(train_data, batch_size=batch_size)
+train_dataloader = DataLoader(train_data, batch_size=128)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
 
-rnn_model = torch.load(f'models/20.pt').to(device)
+rnn_model = torch.load(f'models/20_{args.noise}.pt').to(device)
 acc = dataloader_accuracy(train_dataloader, rnn_model)
 print(acc)
 
