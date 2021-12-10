@@ -10,21 +10,19 @@
 #$ -N lstm      # Name for the job (optional)
 
 # Load the necessary modules
-module load python/3.8.5
-module load cudnn/8.1.1-cuda11
+#module load python/3.8.5
+#module load cudnn/8.1.1-cuda11
 
 # Load the virtualenv containing the pytorch package
-source ~/venv/bin/activate
+#source ~/venv/bin/activate
 
-for n_layer in 1 2 3 4 5 6 7 8 9; do
-python train_lstm.py --n_elems=200 \
-                     --n_train_elems=195 \
-                     --n_train_samples=2048000 \
+python train_lstm.py --n_elems=20 \
+                     --n_train_elems=20 \
+                     --n_train_samples=128000 \
                      --n_eval_samples=10000 \
-                     --n_epochs=200 \
-                     --n_layers=$n_layer \
+                     --n_epochs=50 \
+                     --n_layers=1 \
                      --train_unique='' \
                      --n_exclusive_data=0 \
                      --data_augmentation=0 \
-                     --log_folder='results200'
-done;
+                     --log_folder='results'

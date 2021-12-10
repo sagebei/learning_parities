@@ -110,6 +110,7 @@ def dataloader_accuracy(dataloader, model):
             y_batch = y_batch.to(device)
             y_pred = model(X_batch)[:, 0]
             batch_acc = batch_accuracy(y_pred, y_batch)
+            print(batch_acc)
             accuracy.append(batch_acc)
     model.train()
     if len(accuracy) == 0:
