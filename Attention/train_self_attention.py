@@ -21,11 +21,11 @@ torch.manual_seed(0)
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
                     type=int,
-                    default=15,
+                    default=20,
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=10,
+                    default=15,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
@@ -166,6 +166,7 @@ def train():
             num_steps += 1
 
         # lr_scheduler.step()
+    torch.save(selfattention_model, f'models/{args.n_elems}.pt')
 
 
 if __name__ == '__main__':

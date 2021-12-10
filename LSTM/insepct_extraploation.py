@@ -1,8 +1,8 @@
 import torch
 from torch.utils.data import DataLoader
 
-from utils import ParityDataset
-from utils import dataloader_accuracy
+from parityfunction.utils import ParityDataset
+from parityfunction.utils import dataloader_accuracy
 import argparse
 
 import numpy as np

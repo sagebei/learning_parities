@@ -18,11 +18,11 @@ torch.manual_seed(0)
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
                     type=int,
-                    default=15,
+                    default=20,
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=10,
+                    default=15,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
@@ -34,7 +34,7 @@ PARSER.add_argument('--n_eval_samples',
                     help='number of evaluation samples')
 PARSER.add_argument('--n_epochs',
                     type=int,
-                    default=50,
+                    default=100,
                     help='Number of epochs to train.')
 PARSER.add_argument('--n_layers',
                     type=int,
@@ -44,10 +44,6 @@ PARSER.add_argument('--train_unique',
                     type=bool,
                     default=False,
                     help='if the training dataset contains duplicated data.')
-PARSER.add_argument('--n_exclusive_data',
-                    type=int,
-                    default=10000,
-                    help='number of data that the training data does not contain.')
 PARSER.add_argument('--log_folder',
                     type=str,
                     default='results',
@@ -58,18 +54,11 @@ args = PARSER.parse_args()
 print(args)
 
 
-exclusive_data = ParityDataset(n_samples=args.n_exclusive_data,
-                               n_elems=args.n_elems,
-                               n_nonzero_min=1,
-                               n_nonzero_max=args.n_train_elems,
-                               exclude_dataset=None,
-                               unique=True,
-                               model='rnn')
 train_data = ParityDataset(n_samples=args.n_train_samples,
                            n_elems=args.n_elems,
                            n_nonzero_min=1,
                            n_nonzero_max=args.n_train_elems,
-                           exclude_dataset=exclusive_data,
+                           exclude_dataset=None,
                            unique=args.train_unique,
                            model='rnn')
 val_data = ParityDataset(n_samples=args.n_eval_samples,
@@ -96,22 +85,19 @@ dataloader_dict = {
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
-input_size = 1
-hidden_size = 128
-learning_rate = 0.0003
-eval_interval = 50
-rnn_model = RNN(input_size=input_size,
-                hidden_size=hidden_size,
+
+rnn_model = RNN(input_size=1,
+                hidden_size=128,
                 num_layers=args.n_layers)
 rnn_model = rnn_model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.Adam(rnn_model.parameters(), lr=learning_rate)
+optimizer = optim.Adam(rnn_model.parameters(), lr=0.0003)
 writer = SummaryWriter(f'{args.log_folder}/rnn{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}-{args.n_exclusive_data}')
+                       f'_{args.train_unique}')
 
-
+eval_interval = 50
 num_steps = 0
 for num_epoch in range(args.n_epochs):
     print(f'Epochs: {num_epoch}')
@@ -134,3 +120,6 @@ for num_epoch in range(args.n_epochs):
                 writer.add_scalar(loader_name, val_acc, num_steps)
 
         num_steps += 1
+
+torch.save(rnn_model, f'models/{args.n_elems}.pt')
+
