@@ -24,7 +24,6 @@ python train_mlp.py --n_elems=60 \
                     --n_epochs=100 \
                     --n_layers=$n_layer \
                     --train_unique='' \
-                    --n_exclusive_data=0 \
                     --log_folder='results60'
 done;
 

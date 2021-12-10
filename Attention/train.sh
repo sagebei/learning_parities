@@ -22,7 +22,6 @@ python train_self_attention.py --n_elems=15 \
                                --n_train_elems=10 \
                                --n_train_samples=128000 \
                                --n_eval_samples=10000 \
-                               --n_exclusive_data=0 \
                                --n_epochs=200 \
                                --batch_size=128 \
                                --n_layers=$n_layers \

@@ -45,10 +45,6 @@ PARSER.add_argument('--train_unique',
                     type=bool,
                     default='',
                     help='if the training dataset contains duplicated data.')
-PARSER.add_argument('--n_exclusive_data',
-                    type=int,
-                    default=10000,
-                    help='number of data that the training data does not contain.')
 PARSER.add_argument('--log_folder',
                     type=str,
                     default='results',
@@ -59,13 +55,6 @@ args = PARSER.parse_args()
 print(args)
 
 
-exclusive_data = ParityDataset(n_samples=args.n_exclusive_data,
-                               n_elems=args.n_elems,
-                               n_nonzero_min=1,
-                               n_nonzero_max=args.n_train_elems,
-                               exclude_dataset=None,
-                               unique=True,
-                               model='mlp')
 train_data = ParityDataset(n_samples=args.n_train_samples,
                            n_elems=args.n_elems,
                            n_nonzero_min=1,
@@ -107,7 +96,7 @@ criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(lstm_model.parameters(), lr=0.0003)
 writer = SummaryWriter(f'{args.log_folder}/mlp{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}-{args.n_exclusive_data}')
+                       f'_{args.train_unique}')
 
 eval_interval = 50
 num_steps = 0

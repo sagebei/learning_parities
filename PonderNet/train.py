@@ -81,10 +81,6 @@ def main():
                         type=bool,
                         default='',
                         help='if the training dataset contains duplicated data.')
-    PARSER.add_argument('--n_exclusive_data',
-                        type=int,
-                        default=0,
-                        help='number of data that the training data does not contain.')
     PARSER.add_argument('--data_augmentation',
                         type=float,
                         default=0,
@@ -99,20 +95,13 @@ def main():
 
     writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.n_train_elems}' +
                            f'_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                           f'_{args.train_unique}-{args.n_exclusive_data}-{args.data_augmentation}')
+                           f'_{args.train_unique}-{args.data_augmentation}')
 
-    exclusive_data = ParityDataset(n_samples=args.n_exclusive_data,
-                                   n_elems=args.n_elems,
-                                   n_nonzero_min=1,
-                                   n_nonzero_max=args.n_train_elems,
-                                   exclude_dataset=None,
-                                   unique=True,
-                                   model='mlp')
     train_data = ParityDataset(n_samples=args.n_train_samples,
                                n_elems=args.n_elems,
                                n_nonzero_min=1,
                                n_nonzero_max=args.n_train_elems,
-                               exclude_dataset=exclusive_data,
+                               exclude_dataset=None,
                                unique=args.train_unique,
                                model='mlp',
                                data_augmentation=args.data_augmentation)

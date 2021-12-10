@@ -47,10 +47,6 @@ PARSER.add_argument('--train_unique',
                     type=bool,
                     default='',
                     help='if the training dataset contains duplicated data.')
-PARSER.add_argument('--n_exclusive_data',
-                    type=int,
-                    default=0,
-                    help='number of data that the training data does not contain.')
 PARSER.add_argument('--mode',
                     type=str,
                     default='soft',
@@ -86,18 +82,11 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
 
-exclusive_data = ParityDataset(n_samples=args.n_exclusive_data,
-                               n_elems=args.n_elems,
-                               n_nonzero_min=1,
-                               n_nonzero_max=args.n_train_elems,
-                               exclude_dataset=None,
-                               unique=True,
-                               model='cnn')
 train_data = ParityDataset(n_samples=args.n_train_samples,
                            n_elems=args.n_elems,
                            n_nonzero_min=1,
                            n_nonzero_max=args.n_train_elems,
-                           exclude_dataset=exclusive_data,
+                           exclude_dataset=None,
                            unique=args.train_unique,
                            model='cnn')
 val_data = ParityDataset(n_samples=args.n_eval_samples,
@@ -119,7 +108,7 @@ extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args
 writer = SummaryWriter(f'{args.log_folder}/{args.embed_dim}_{args.linear_dim}_{args.n_heads}_{args.mode}' +
                        f'_{args.n_elems}_{args.n_train_elems}_{args.n_layers}_{args.n_epochs}' +
                        f'_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}_{args.n_exclusive_data}_without_scheduler')
+                       f'_{args.train_unique}_without_scheduler')
 
 
 def train():

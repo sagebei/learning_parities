@@ -23,5 +23,4 @@ python train_rnn.py --n_elems=20 \
                     --n_epochs=50 \
                     --n_layers=1 \
                     --train_unique='' \
-                    --n_exclusive_data=0 \
                     --log_folder='results'

@@ -24,7 +24,6 @@ python train.py --n_elems=15 \
                 --n_eval_samples=10000 \
                 --n_epochs=1000 \
                 --train_unique='' \
-                --n_exclusive_data=0 \
                 --data_augmentation=0 \
                 --log_folder='results15'
 done;

@@ -25,6 +25,5 @@ python train_cnn.py --n_elems=120 \
                     --n_layers=$n_layer \
                     --n_out_channel=128 \
                     --train_unique='' \
-                    --n_exclusive_data=0 \
                     --log_folder='results120'
 done;

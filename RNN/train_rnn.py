@@ -42,7 +42,7 @@ PARSER.add_argument('--n_layers',
                     help='Number of layers.')
 PARSER.add_argument('--train_unique',
                     type=bool,
-                    default=False,
+                    default='',
                     help='if the training dataset contains duplicated data.')
 PARSER.add_argument('--log_folder',
                     type=str,
