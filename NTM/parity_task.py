@@ -100,7 +100,7 @@ print(device)
 def train():
     writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.n_train_elems}_{args.n_train_samples}_'
                            f'{args.learning_rate}_{args.memory_size}_' +
-                           f'{args.n_epochs}_{args.batch_size}_{args.noise}_{args.seed}')
+                           f'{args.n_epochs}_{args.batch_size}_{args.noise}_{args.seed}_val')
 
     model = NTM(vector_length=vector_length,
                 hidden_size=128,
@@ -142,10 +142,10 @@ def train():
                               training_step)
             training_step += 1
 
-            # if training_step % feedback_frequency == 0:
-            #     for loader_name, loader in dataloader_dict.items():
-            #         val_acc = dataloader_accuracy(loader, model, args)
-            #         writer.add_scalar(loader_name, val_acc, training_step)
+            if training_step % feedback_frequency == 0:
+                for loader_name, loader in dataloader_dict.items():
+                    val_acc = dataloader_accuracy(loader, model, args)
+                    writer.add_scalar(loader_name, val_acc, training_step)
 
     torch.save(model.state_dict(), 'models/parity.pt')
 

@@ -16,12 +16,12 @@ module load cudnn/8.1.1-cuda11
 # Load the virtualenv containing the pytorch package
 source ~/venv/bin/activate
 python parity_task.py --n_elems=20 \
-                      --n_train_elems=20 \
+                      --n_train_elems=15 \
                       --n_train_samples=128000 \
                       --n_eval_samples=5120 \
                       --batch_size=128 \
                       --memory_size=10 \
-                      --learning_rate=0.001 \
+                      --learning_rate=0.0005 \
                       --n_epochs=100 \
                       --noise='.' \
                       --seed=0 \
