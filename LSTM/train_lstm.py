@@ -3,17 +3,12 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-
 from utils import ParityDataset
 from utils import batch_accuracy, dataloader_accuracy
 from models import LSTM
 import argparse
-
 import numpy as np
 import random
-random.seed(0)
-np.random.seed(0)
-torch.manual_seed(0)
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
@@ -22,7 +17,7 @@ PARSER.add_argument('--n_elems',
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=15,
+                    default=20,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
@@ -46,16 +41,24 @@ PARSER.add_argument('--train_unique',
                     help='if the training dataset contains duplicated data.')
 PARSER.add_argument('--noise',
                     type=bool,
-                    default='',
-                    help='Augment the dataset by the specified ratio')
+                    default='.',
+                    help='if the parity data contain noise')
 PARSER.add_argument('--log_folder',
                     type=str,
                     default='results',
                     help='log folder')
+PARSER.add_argument('--seed',
+                    type=int,
+                    default=0,
+                    help='seed')
 
 
 args = PARSER.parse_args()
 print(args)
+
+random.seed(args.seed)
+np.random.seed(args.seed)
+torch.manual_seed(args.seed)
 
 train_data = ParityDataset(n_samples=args.n_train_samples,
                            n_elems=args.n_elems,
@@ -73,10 +76,10 @@ val_data = ParityDataset(n_samples=args.n_eval_samples,
                          unique=True,
                          model='rnn',
                          noise=args.noise)
-extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args.n_train_elems else 0,
-                           n_elems=args.n_elems,
-                           n_nonzero_min=args.n_train_elems,
-                           n_nonzero_max=args.n_elems,
+extra_data = ParityDataset(n_samples=args.n_eval_samples,
+                           n_elems=args.n_elems+10,
+                           n_nonzero_min=args.n_elems,
+                           n_nonzero_max=args.n_elems+10,
                            exclude_dataset=None,
                            unique=True,
                            model='rnn',
@@ -91,18 +94,15 @@ dataloader_dict = {
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
-input_size = 1
-hidden_size = 128
-num_layers = args.n_layers
-learning_rate = 0.0003
+
 eval_interval = 50
-lstm_model = LSTM(input_size=input_size,
-                  hidden_size=hidden_size,
-                  num_layers=num_layers)
+lstm_model = LSTM(input_size=1,
+                  hidden_size=128,
+                  num_layers=args.n_layers)
 lstm_model = lstm_model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
+optimizer = optim.Adam(lstm_model.parameters(), lr=0.0003)
 writer = SummaryWriter(f'{args.log_folder}/lstm{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
                        f'_{args.train_unique}_{args.noise}')

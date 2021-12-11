@@ -28,13 +28,12 @@ class ParityDataset(Dataset):
 
         self.model = model
         self.noise = noise
-        self.data_augmentation = data_augmentation
         self.unique = unique
         self.unique_set = set()
         self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
 
         self.X, self.Y = [], []
-        dataset_path = f"../datasets/{n_samples}_{n_elems}_{n_nonzero_max}_{n_nonzero_min}_{unique}_{model}.pt"
+        dataset_path = f"../datasets/{n_samples}_{n_elems}_{n_nonzero_max}_{n_nonzero_min}_{unique}_{model}_{noise}.pt"
         if exists(dataset_path):
             self.X, self.Y = torch.load(dataset_path)
         elif self.n_samples > 0:

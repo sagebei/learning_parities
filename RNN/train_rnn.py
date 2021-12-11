@@ -3,17 +3,12 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-
 from utils import ParityDataset
 from utils import batch_accuracy, dataloader_accuracy
 from models import RNN
 import argparse
-
 import numpy as np
 import random
-random.seed(0)
-np.random.seed(0)
-torch.manual_seed(0)
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
@@ -22,11 +17,11 @@ PARSER.add_argument('--n_elems',
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=15,
+                    default=20,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
-                    default=128000,
+                    default=500000,
                     help='number of training samples.')
 PARSER.add_argument('--n_eval_samples',
                     type=int,
@@ -47,16 +42,23 @@ PARSER.add_argument('--train_unique',
 PARSER.add_argument('--noise',
                     type=bool,
                     default='',
-                    help='if add noise to the parity data')
+                    help='if the parity data contain noise')
 PARSER.add_argument('--log_folder',
                     type=str,
                     default='results',
                     help='log folder')
+PARSER.add_argument('--seed',
+                    type=int,
+                    default=0,
+                    help='seed')
 
 
 args = PARSER.parse_args()
 print(args)
 
+random.seed(args.seed)
+np.random.seed(args.seed)
+torch.manual_seed(args.seed)
 
 train_data = ParityDataset(n_samples=args.n_train_samples,
                            n_elems=args.n_elems,
@@ -74,10 +76,10 @@ val_data = ParityDataset(n_samples=args.n_eval_samples,
                          unique=True,
                          model='rnn',
                          noise=args.noise)
-extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args.n_train_elems else 0,
-                           n_elems=args.n_elems,
-                           n_nonzero_min=args.n_train_elems,
-                           n_nonzero_max=args.n_elems,
+extra_data = ParityDataset(n_samples=args.n_eval_samples,
+                           n_elems=args.n_elems+10,
+                           n_nonzero_min=args.n_elems,
+                           n_nonzero_max=args.n_elems+10,
                            exclude_dataset=None,
                            unique=True,
                            model='rnn',

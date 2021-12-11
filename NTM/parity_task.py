@@ -17,7 +17,7 @@ PARSER.add_argument('--n_elems',
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=15,
+                    default=20,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
@@ -81,10 +81,10 @@ val_data = ParityDataset(n_samples=args.n_eval_samples,
                          exclude_dataset=train_data,
                          model='rnn',
                          noise=args.noise)
-extra_data = ParityDataset(n_samples=args.n_eval_samples if args.n_elems != args.n_train_elems else 0,
+extra_data = ParityDataset(n_samples=args.n_eval_samples,
                            n_elems=args.n_elems,
-                           n_nonzero_min=args.n_train_elems+1,
-                           n_nonzero_max=args.n_elems,
+                           n_nonzero_min=args.n_elems,
+                           n_nonzero_max=args.n_elems+10,
                            exclude_dataset=None,
                            model='rnn',
                            noise=args.noise)
@@ -100,7 +100,7 @@ print(device)
 def train():
     writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.n_train_elems}_{args.n_train_samples}_'
                            f'{args.learning_rate}_{args.memory_size}_' +
-                           f'{args.n_epochs}_{args.batch_size}_{args.noise}_{args.seed}_val')
+                           f'{args.n_epochs}_{args.batch_size}_{args.noise}_{args.seed}')
 
     model = NTM(vector_length=vector_length,
                 hidden_size=128,

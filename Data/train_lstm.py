@@ -4,10 +4,12 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
-from parityfunction.utils import ParityDataset
-from parityfunction.utils import batch_accuracy, dataloader_accuracy
+from utils import ParityDataset
+from utils import batch_accuracy, dataloader_accuracy
 from models import LSTM
 import argparse
+import numpy as np
+import random
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',

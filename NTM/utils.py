@@ -42,7 +42,7 @@ class ParityDataset(Dataset):
         while True:
             x = torch.zeros((self.n_elems,))
             n_non_zero = torch.randint(
-                self.n_nonzero_min, self.n_nonzero_max + 1, (1,)
+                self.n_nonzero_min, self.n_nonzero_max, (1,)
             ).item()
 
             if self.noise:

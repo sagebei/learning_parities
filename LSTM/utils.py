@@ -33,7 +33,7 @@ class ParityDataset(Dataset):
         self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
 
         self.X, self.Y = [], []
-        dataset_path = f"../datasets/{n_samples}_{n_elems}_{n_nonzero_max}_{n_nonzero_min}_{unique}_{model}.pt"
+        dataset_path = f"../datasets/{n_samples}_{n_elems}_{n_nonzero_max}_{n_nonzero_min}_{unique}_{model}_{noise}.pt"
         if exists(dataset_path):
             self.X, self.Y = torch.load(dataset_path)
         elif self.n_samples > 0:
@@ -49,7 +49,7 @@ class ParityDataset(Dataset):
         while True:
             x = torch.zeros((self.n_elems,))
             n_non_zero = torch.randint(
-                self.n_nonzero_min, self.n_nonzero_max + 1, (1,)
+                self.n_nonzero_min, self.n_nonzero_max, (1,)
             ).item()
 
             if self.noise:
@@ -109,7 +109,6 @@ def dataloader_accuracy(dataloader, model):
             y_batch = y_batch.to(device)
             y_pred = model(X_batch)[:, 0]
             batch_acc = batch_accuracy(y_pred, y_batch)
-            print(batch_acc)
             accuracy.append(batch_acc)
     model.train()
     if len(accuracy) == 0:

@@ -40,7 +40,7 @@ train_data = ParityDataset(n_samples=args.n_train_samples,
                            exclude_dataset=None,
                            unique=False,
                            model='rnn',
-                           data_augmentation=0)
+                           noise=args.noise)
 
 
 batch_size = 128
