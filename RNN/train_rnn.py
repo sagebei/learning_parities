@@ -21,7 +21,7 @@ PARSER.add_argument('--n_train_elems',
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
-                    default=500000,
+                    default=128000,
                     help='number of training samples.')
 PARSER.add_argument('--n_eval_samples',
                     type=int,
@@ -41,7 +41,7 @@ PARSER.add_argument('--train_unique',
                     help='if the training dataset contains duplicated data.')
 PARSER.add_argument('--noise',
                     type=bool,
-                    default='',
+                    default='.',
                     help='if the parity data contain noise')
 PARSER.add_argument('--log_folder',
                     type=str,
