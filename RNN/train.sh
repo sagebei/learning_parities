@@ -8,15 +8,16 @@
 #$ -l gpu=1         # Request GPU
 #$ -l cluster=andrena  # Ensure that the job runs on Andrena nodes
 #$ -N rnn      # Name for the job (optional)
-#
-## Load the necessary modules
-#module load python/3.8.5
-#module load cudnn/8.1.1-cuda11
-#
-## Load the virtualenv containing the pytorch package
-#source ~/venv/bin/activate
+
+# Load the necessary modules
+module load python/3.8.5
+module load cudnn/8.1.1-cuda11
+
+# Load the virtualenv containing the pytorch package
+source ~/venv/bin/activate
 
 for noise in '' '.'; do
+  for seed in 23 56 1435 2452 78 345; do
 python train_rnn.py --n_elems=20 \
                     --n_train_elems=20 \
                     --n_train_samples=128000 \
@@ -26,5 +27,6 @@ python train_rnn.py --n_elems=20 \
                     --train_unique='' \
                     --noise=$noise \
                     --log_folder='results' \
-                    --seed=0
+                    --seed=$seed
+done;
 done;
