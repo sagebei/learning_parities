@@ -104,7 +104,7 @@ criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(rnn_model.parameters(), lr=0.0003)
 writer = SummaryWriter(f'{args.log_folder}/rnn{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}_{args.noise}')
+                       f'_{args.train_unique}_{args.noise}_{args.seed}')
 
 eval_interval = 50
 num_steps = 0
