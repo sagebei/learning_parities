@@ -130,5 +130,5 @@ for num_epoch in range(args.n_epochs):
 
         num_steps += 1
 
-torch.save(rnn_model, f'models/{args.n_elems}_{args.noise}.pt')
+torch.save(rnn_model, f'models/{args.n_elems}_{args.noise}_{args.seed}.pt')
 
