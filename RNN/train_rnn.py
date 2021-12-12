@@ -29,7 +29,7 @@ PARSER.add_argument('--n_eval_samples',
                     help='number of evaluation samples')
 PARSER.add_argument('--n_epochs',
                     type=int,
-                    default=100,
+                    default=50,
                     help='Number of epochs to train.')
 PARSER.add_argument('--n_layers',
                     type=int,

@@ -16,12 +16,17 @@ module load cudnn/8.1.1-cuda11
 # Load the virtualenv containing the pytorch package
 source ~/venv/bin/activate
 
+for noise in '' '.'; do
+  for seed in 11 22 33 44 55 66 77 88 99 1010; do
 python train_lstm.py --n_elems=20 \
                      --n_train_elems=20 \
                      --n_train_samples=128000 \
                      --n_eval_samples=10000 \
-                     --n_epochs=50 \
+                     --n_epochs=100 \
                      --n_layers=1 \
                      --train_unique='' \
-                     --noise='' \
-                     --log_folder='results'
+                     --noise=$noise \
+                     --log_folder='results_seed' \
+                     --seed=$seed
+done;
+done;

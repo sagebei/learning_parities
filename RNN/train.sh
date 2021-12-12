@@ -17,7 +17,7 @@ module load cudnn/8.1.1-cuda11
 source ~/venv/bin/activate
 
 for noise in '' '.'; do
-  for seed in 23 56 1435 2452 78 345; do
+  for seed in 11 22 33 44 55; do
 python train_rnn.py --n_elems=20 \
                     --n_train_elems=20 \
                     --n_train_samples=128000 \

@@ -105,7 +105,7 @@ criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(lstm_model.parameters(), lr=0.0003)
 writer = SummaryWriter(f'{args.log_folder}/lstm{args.n_elems}_{args.n_train_elems}' +
                        f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}_{args.noise}')
+                       f'_{args.train_unique}_{args.noise}_{args.seed}')
 
 
 num_steps = 0
@@ -131,5 +131,5 @@ for num_epoch in range(args.n_epochs):
 
         num_steps += 1
 
-torch.save(lstm_model, f'models/{args.n_elems}_{args.noise}.pt')
+torch.save(lstm_model, f'models/{args.n_elems}_{args.noise}_{args.seed}.pt')
 
