@@ -17,7 +17,7 @@ module load cudnn/8.1.1-cuda11
 source ~/venv/bin/activate
 
 for noise in '' '.'; do
-  for seed in 11 22 33 44 55 66 77 88 99 1010; do
+  for i in 1 2 3 4 5 6 7 8 9 10; do
 python train_lstm.py --n_elems=20 \
                      --n_train_elems=20 \
                      --n_train_samples=128000 \
@@ -27,6 +27,6 @@ python train_lstm.py --n_elems=20 \
                      --train_unique='' \
                      --noise=$noise \
                      --log_folder='results_seed' \
-                     --seed=$seed
+                     --seed=$RANDOM
 done;
 done;
