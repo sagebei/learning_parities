@@ -82,7 +82,7 @@ val_data = ParityDataset(n_samples=args.n_eval_samples,
                          model='rnn',
                          noise=args.noise)
 extra_data = ParityDataset(n_samples=args.n_eval_samples,
-                           n_elems=args.n_elems,
+                           n_elems=args.n_elems+10,
                            n_nonzero_min=args.n_elems,
                            n_nonzero_max=args.n_elems+10,
                            exclude_dataset=None,
