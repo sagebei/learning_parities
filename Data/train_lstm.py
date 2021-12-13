@@ -40,9 +40,9 @@ PARSER.add_argument('--train_unique',
                     default='',
                     help='if the training dataset contains duplicated data.')
 PARSER.add_argument('--approach',
-                    type=bool,
-                    default='.',
-                    help='if the parity data contain noise')
+                    type=int,
+                    default=0,
+                    help='the approach by which the data is generated')
 PARSER.add_argument('--log_folder',
                     type=str,
                     default='results',
