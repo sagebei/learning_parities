@@ -51,6 +51,10 @@ PARSER.add_argument('--seed',
                     type=int,
                     default=0,
                     help='seed')
+PARSER.add_argument('--data_augmentation',
+                    type=float,
+                    default=0,
+                    help='data_augmentation')
 
 
 args = PARSER.parse_args()
@@ -67,7 +71,8 @@ train_data = ParityDataset(n_samples=args.n_train_samples,
                            exclude_dataset=None,
                            unique=args.train_unique,
                            model='rnn',
-                           approach=args.approach)
+                           approach=args.approach,
+                           data_augmentation=args.data_augmentation)
 val_data = ParityDataset(n_samples=args.n_eval_samples,
                          n_elems=args.n_elems,
                          n_nonzero_min=1,
