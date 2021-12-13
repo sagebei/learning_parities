@@ -24,5 +24,5 @@ python parity_task.py --n_elems=20 \
                       --learning_rate=0.0005 \
                       --n_epochs=100 \
                       --noise='.' \
-                      --seed=0 \
+                      --seed=$RANDOM \
                       --log_folder='results'
