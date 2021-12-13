@@ -1,4 +1,3 @@
-import os
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
@@ -14,8 +13,7 @@ class ParityDataset(Dataset):
         exclude_dataset=None,
         unique=False,
         model='rnn',
-        data_augmentation=0,
-        noise=False,
+        approach=0
     ):
         self.n_samples = n_samples
         self.n_elems = n_elems
@@ -26,8 +24,7 @@ class ParityDataset(Dataset):
         )
 
         self.model = model
-        self.data_augmentation = data_augmentation
-        self.noise = noise
+        self.approach = approach
         self.unique = unique
         self.unique_set = set()
         self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
@@ -35,8 +32,8 @@ class ParityDataset(Dataset):
         self.X, self.Y = [], []
 
         if self.n_samples > 0:
-            print('Building dataset ...')
             self.build_dataset()
+
 
     def __len__(self):
         return self.n_samples
@@ -47,14 +44,15 @@ class ParityDataset(Dataset):
             n_non_zero = torch.randint(
                 self.n_nonzero_min, self.n_nonzero_max + 1, (1,)
             ).item()
-
-            if self.noise:
-                x[:n_non_zero] = torch.randint(0, 2, (n_non_zero,)) * 2 - 1
-            else:
+            if self.approach == 1:
                 x[:n_non_zero] = 1.0
+                x = x[torch.randperm(self.n_elems)]
+            elif self.approach == 2:
+                x[:n_non_zero] = torch.randint(0, 2, (n_non_zero,)) * 2 - 1
+                x = x[torch.randperm(self.n_elems)]
+            else:
+                x = torch.randint(0, 2, (self.n_elems,))
 
-            # x = torch.rand.randint(0, 2, (self.n_elems,))
-            x = x[torch.randperm(self.n_elems)]
             y = (x == 1.0).sum() % 2
 
             item = tuple(x.detach().clone().tolist())
@@ -66,17 +64,12 @@ class ParityDataset(Dataset):
                     return x, y.item(), item
 
     def build_dataset(self):
+        print('Building dataset ...')
         for _ in range(self.n_samples):
             x, y, item = self.generate_data()
             self.X.append(x)
             self.Y.append(y)
             self.unique_set.add(item)
-
-        if self.data_augmentation > 0:
-            n_aug = int(self.data_augmentation * self.n_samples)
-            self.X += self.X[:n_aug]
-            self.Y += self.Y[:n_aug]
-            self.n_samples += n_aug
 
         self.Y = torch.Tensor(self.Y).float()
         if self.model == 'rnn':
@@ -110,6 +103,7 @@ def dataloader_accuracy(dataloader, model):
             y_batch = y_batch.to(device)
             y_pred = model(X_batch)[:, 0]
             batch_acc = batch_accuracy(y_pred, y_batch)
+            print(batch_acc)
             accuracy.append(batch_acc)
     model.train()
     if len(accuracy) == 0:
