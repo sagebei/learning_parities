@@ -144,7 +144,7 @@ def train():
 
             if training_step % feedback_frequency == 0:
                 for loader_name, loader in dataloader_dict.items():
-                    val_acc = dataloader_accuracy(loader, model, args)
+                    val_acc = dataloader_accuracy(loader_name, loader, model, args)
                     writer.add_scalar(loader_name, val_acc, training_step)
 
     torch.save(model.state_dict(), 'models/parity.pt')

@@ -87,7 +87,7 @@ def batch_accuracy(y_pred_batch, y_batch):
     return acc
 
 
-def dataloader_accuracy(dataloader, model, args):
+def dataloader_accuracy(loader_name, dataloader, model, args):
     model.eval()
     accuracy = []
     device = next(model.parameters()).device
@@ -95,9 +95,12 @@ def dataloader_accuracy(dataloader, model, args):
         for X_batch, y_batch in dataloader:
             X_batch = X_batch.to(device)
             y_batch = y_batch.to(device)
-            input = torch.zeros(args.n_elems + 1, args.batch_size, 1 + 1).to(device)
-            input[:args.n_elems, :, :1] = X_batch.transpose(0, 1)
-            input[args.n_elems, :, 1] = 1.0
+            n_elems = args.n_elems
+            if loader_name == 'extra':
+                n_elems = args.n_elems + 10
+            input = torch.zeros(n_elems + 1, args.batch_size, 1 + 1).to(device)
+            input[:n_elems, :, :1] = X_batch.transpose(0, 1)
+            input[n_elems, :, 1] = 1.0
             target = y_batch.unsqueeze(dim=1)
 
             state = model.get_initial_state(batch_size=args.batch_size)
