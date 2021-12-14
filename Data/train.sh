@@ -26,7 +26,7 @@ python train_lstm.py --n_elems=20 \
                      --n_layers=1 \
                      --train_unique='' \
                      --approach=3 \
-                     --log_folder='results_a3_nda_long' \
+                     --log_folder='results_a3_nda_mid' \
                      --seed=$RANDOM \
                      --data_augmentation=0.3
 done;
