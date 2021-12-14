@@ -78,7 +78,7 @@ class ParityDataset(Dataset):
             for _ in range(n_aug):
                 x = torch.zeros((self.n_elems,))
                 n_non_zero = torch.randint(
-                    self.n_nonzero_min, 6, (1,)
+                    15, 20, (1,)
                 ).item()
                 x[:n_non_zero] = 1.0
                 x = x[torch.randperm(self.n_elems)]
