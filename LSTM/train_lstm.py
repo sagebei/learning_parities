@@ -13,11 +13,11 @@ import random
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
                     type=int,
-                    default=20,
+                    default=29,
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=20,
+                    default=29,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
@@ -45,7 +45,7 @@ PARSER.add_argument('--noise',
                     help='if the parity data contain noise')
 PARSER.add_argument('--log_folder',
                     type=str,
-                    default='results',
+                    default='logs',
                     help='log folder')
 PARSER.add_argument('--seed',
                     type=int,
