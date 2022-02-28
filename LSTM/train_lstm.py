@@ -103,7 +103,7 @@ lstm_model = lstm_model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(lstm_model.parameters(), lr=args.lr)
-writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.lr}_{args.seed}')
+writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.lr}_{args.n_train_samples}')
 
 
 num_steps = 0
@@ -129,5 +129,5 @@ for num_epoch in range(args.n_epochs):
 
         num_steps += 1
 
-torch.save(lstm_model.state_dict(), f'models/{args.n_elems}_{args.lr}_{args.seed}.pt')
+torch.save(lstm_model.state_dict(), f'models/{args.n_elems}_{args.lr}_{args.n_train_samples}.pt')
 
