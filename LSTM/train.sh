@@ -28,5 +28,5 @@ python train_lstm.py --n_elems=20 \
                      --noise='.' \
                      --log_folder='logs' \
                      --seed=$RANDOM  \
-                     --lr=lr
+                     --lr=$lr
 done;
