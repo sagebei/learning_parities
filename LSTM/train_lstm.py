@@ -3,12 +3,12 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
+from utils import set_seed
 from utils import ParityDataset
 from utils import batch_accuracy, dataloader_accuracy
 from models import LSTM
 import argparse
-import numpy as np
-import random
+
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
@@ -51,14 +51,16 @@ PARSER.add_argument('--seed',
                     type=int,
                     default=0,
                     help='seed')
+PARSER.add_argument('--lr',
+                    type=int,
+                    default=0.0001,
+                    help='learning rate')
 
 
 args = PARSER.parse_args()
 print(args)
 
-random.seed(args.seed)
-np.random.seed(args.seed)
-torch.manual_seed(args.seed)
+set_seed(args.seed)
 
 train_data = ParityDataset(n_samples=args.n_train_samples,
                            n_elems=args.n_elems,
@@ -92,8 +94,6 @@ dataloader_dict = {
     'extra': DataLoader(extra_data, batch_size=batch_size),
 }
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(device)
-
 
 eval_interval = 50
 lstm_model = LSTM(input_size=1,
@@ -102,10 +102,8 @@ lstm_model = LSTM(input_size=1,
 lstm_model = lstm_model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.Adam(lstm_model.parameters(), lr=0.0003)
-writer = SummaryWriter(f'{args.log_folder}/lstm{args.n_elems}_{args.n_train_elems}' +
-                       f'_{args.n_layers}_{args.n_epochs}_{args.n_eval_samples}_{args.n_train_samples}' +
-                       f'_{args.train_unique}_{args.noise}_{args.seed}')
+optimizer = optim.Adam(lstm_model.parameters(), lr=args.lr)
+writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.lr}_{args.seed}')
 
 
 num_steps = 0
@@ -131,5 +129,5 @@ for num_epoch in range(args.n_epochs):
 
         num_steps += 1
 
-torch.save(lstm_model, f'models/{args.n_elems}_{args.noise}_{args.seed}.pt')
+torch.save(lstm_model.state_dict(), f'models/{args.n_elems}_{args.lr}_{args.seed}.pt')
 
