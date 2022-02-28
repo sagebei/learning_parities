@@ -52,7 +52,7 @@ PARSER.add_argument('--seed',
                     default=0,
                     help='seed')
 PARSER.add_argument('--lr',
-                    type=int,
+                    type=float,
                     default=0.0001,
                     help='learning rate')
 
