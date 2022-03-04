@@ -19,10 +19,10 @@ source ~/venv/bin/activate
 
 for lr in 0.001 0.003 0.0001 0.0003; do
   for num_layers in 1 2 3 4 5; do
-    python train_lstm.py --n_piles=7 \
-                         --num_layers=$num_layers \
-                         --n_train_samples=10000 \
-                         --n_test_samples=2000 \
-                         --lr=$lr
+    python main.py --n_piles=7 \
+                   --num_layers=$num_layers \
+                   --n_train_samples=10000 \
+                   --n_test_samples=2000 \
+                   --lr=$lr
 done;
 done;
