@@ -2,7 +2,7 @@ import random
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-
+from collections import Counter
 
 def set_seed(seed):
     random.seed(seed)
@@ -18,6 +18,8 @@ class Dataset(Dataset):
         self.X = list()
         self.Y = list()
         self.build_dataset()
+        print(Counter(self.Y))
+
 
     def __len__(self):
         return len(self.X)

@@ -11,11 +11,11 @@ from models import LSTM
 set_seed(30)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-n_piles = 5
+n_piles = 7
 batch_size = 128
 eval_interval = 50
-num_layers = 1
-n_epochs = 100
+num_layers = 3
+n_epochs = 500
 
 train_dataset = Dataset(n_samples=10000, n_piles=n_piles)
 test_dataset = Dataset(n_samples=2000, n_piles=n_piles)
