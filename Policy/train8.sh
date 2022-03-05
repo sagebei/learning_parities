@@ -23,6 +23,7 @@ for lr in 0.001 0.003 0.0001 0.0003; do
                    --num_layers=$num_layers \
                    --n_train_samples=30000 \
                    --n_test_samples=6000 \
+                   --n_epochs=500 \
                    --lr=$lr
 done;
 done;

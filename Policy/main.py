@@ -33,11 +33,14 @@ PARSER.add_argument('--lr',
                     type=float,
                     default=0.001,
                     help='number of training samples.')
+PARSER.add_argument('--n_epochs',
+                    type=int,
+                    default=2000,
+                    help='number of training samples.')
 
 args = PARSER.parse_args()
 batch_size = 64
 eval_interval = 50
-n_epochs = 1000
 
 train_dataset = Dataset(n_samples=args.n_train_samples, n_piles=args.n_piles)
 test_dataset = Dataset(n_samples=args.n_test_samples, n_piles=args.n_piles)
@@ -59,7 +62,7 @@ writer = SummaryWriter(f'logs/{args.n_piles}_{args.num_layers}_{args.lr}')
 
 
 num_steps = 0
-for num_epoch in range(n_epochs):
+for num_epoch in range(args.n_epochs):
     print(f'Epochs: {num_epoch}')
     for X_batch, y_batch in train_dataloader:
 
