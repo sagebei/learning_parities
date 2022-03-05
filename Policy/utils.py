@@ -79,5 +79,5 @@ def dataloader_accuracy(dataloader, model):
 
 
 if __name__ == '__main__':
-    data = Dataset(n_samples=1000, n_piles=7)
+    data = Dataset(n_samples=1000, n_piles=5)
     print(data.X, data.Y)

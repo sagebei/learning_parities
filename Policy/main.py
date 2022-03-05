@@ -57,7 +57,7 @@ lstm_model = lstm_model.to(device)
 
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(lstm_model.parameters(), lr=0.001)
+optimizer = optim.Adam(lstm_model.parameters(), lr=args.lr)
 writer = SummaryWriter(f'logs/{args.n_piles}_{args.num_layers}_{args.lr}')
 
 
