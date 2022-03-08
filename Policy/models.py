@@ -7,7 +7,11 @@ class LSTM(nn.Module):
         super(LSTM, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
+
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.bn = nn.BatchNorm1d(hidden_size)
+        self.relu = nn.ReLU()
+
         self.fc = nn.Linear(hidden_size, 3)
 
     def forward(self, x):
@@ -16,6 +20,9 @@ class LSTM(nn.Module):
         out, _ = self.lstm(x, (h0, c0))
 
         out = out[:, -1, :]
+        out = self.bn(out)
+        out = self.relu(out)
+
         out = self.fc(out)
         return out
 
