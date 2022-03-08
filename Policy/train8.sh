@@ -17,7 +17,7 @@ module load cudnn/8.1.1-cuda11
 source ~/venv/bin/activate
 
 
-for lr in 0.001 0.003 0.0001 0.0003; do
+for lr in 0.001 0.0001 0.0003 0.0005; do
   for num_layers in 1 2 3 4 5; do
     python main.py --n_piles=8 \
                    --num_layers=$num_layers \
