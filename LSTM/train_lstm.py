@@ -103,7 +103,7 @@ lstm_model = lstm_model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(lstm_model.parameters(), lr=args.lr)
-writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}_{args.lr}_{args.n_train_samples}')
+writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}/{args.lr}_{args.n_train_samples}')
 
 
 num_steps = 0
