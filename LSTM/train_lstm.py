@@ -13,11 +13,11 @@ import argparse
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
                     type=int,
-                    default=29,
+                    default=40,
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_elems',
                     type=int,
-                    default=29,
+                    default=40,
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
@@ -53,7 +53,7 @@ PARSER.add_argument('--seed',
                     help='seed')
 PARSER.add_argument('--lr',
                     type=float,
-                    default=0.0001,
+                    default=0.001,
                     help='learning rate')
 
 

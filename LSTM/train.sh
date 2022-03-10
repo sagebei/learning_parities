@@ -17,12 +17,12 @@ module load cudnn/8.1.1-cuda11
 source ~/venv/bin/activate
 
 
-for lr in 0.001 0.003 0.005 0.0001 0.0003 0.0005 0.00001 0.00003 0.00005; do
-python train_lstm.py --n_elems=29 \
-                     --n_train_elems=29 \
-                     --n_train_samples=3840 \
-                     --n_eval_samples=1000 \
-                     --n_epochs=100 \
+for lr in 0.001 0.003 0.005 0.0001 0.0003 0.0005 0.0008; do
+python train_lstm.py --n_elems=20 \
+                     --n_train_elems=20 \
+                     --n_train_samples=256000 \
+                     --n_eval_samples=10000 \
+                     --n_epochs=500 \
                      --n_layers=1 \
                      --train_unique='' \
                      --noise='.' \
