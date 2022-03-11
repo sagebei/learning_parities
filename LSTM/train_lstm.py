@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from utils import set_seed
+from utils import set_seed, initialize_weights
 from utils import ParityDataset
 from utils import batch_accuracy, dataloader_accuracy
 from models import LSTM
@@ -97,7 +97,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 eval_interval = 50
 lstm_model = LSTM(input_size=1,
-                  hidden_size=128,
+                  hidden_size=64,
                   num_layers=args.n_layers)
 lstm_model = lstm_model.to(device)
 

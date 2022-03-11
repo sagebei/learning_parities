@@ -2,6 +2,7 @@ import random
 import numpy as np
 import torch
 import torch.nn.functional as F
+import torch.nn as nn
 from torch.utils.data import Dataset
 
 def set_seed(seed):
@@ -9,6 +10,12 @@ def set_seed(seed):
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
+
+
+def initialize_weights(m):
+    if isinstance(m, (nn.LSTM, nn.Linear)):
+        nn.init.orthogonal_(m.weight.data)
+        nn.init.constant_(m.bias.data, 0)
 
 class ParityDataset(Dataset):
     def __init__(

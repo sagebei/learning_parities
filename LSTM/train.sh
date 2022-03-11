@@ -27,6 +27,6 @@ python train_lstm.py --n_elems=20 \
                      --train_unique='' \
                      --noise='.' \
                      --log_folder='logs' \
-                     --seed=30  \
+                     --seed=33  \
                      --lr=$lr
 done;

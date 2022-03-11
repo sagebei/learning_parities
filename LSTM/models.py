@@ -20,6 +20,3 @@ class LSTM(nn.Module):
         out = self.fc(out)
         return out
 
-
-
-
