@@ -95,9 +95,9 @@ dataloader_dict = {
 }
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-eval_interval = 50
+eval_interval = 100
 lstm_model = LSTM(input_size=1,
-                  hidden_size=64,
+                  hidden_size=128,
                   num_layers=args.n_layers)
 lstm_model = lstm_model.to(device)
 
