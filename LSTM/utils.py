@@ -12,11 +12,6 @@ def set_seed(seed):
     torch.cuda.manual_seed_all(seed)
 
 
-def initialize_weights(m):
-    if isinstance(m, (nn.LSTM, nn.Linear)):
-        nn.init.orthogonal_(m.weight.data)
-        nn.init.constant_(m.bias.data, 0)
-
 class ParityDataset(Dataset):
     def __init__(
         self,
