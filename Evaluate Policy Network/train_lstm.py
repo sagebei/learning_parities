@@ -4,25 +4,25 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from utils import set_seed
-from utils import Dataset
+from utils import BoardDataset
 from utils import batch_accuracy, dataloader_accuracy
 from models import LSTM
 
 set_seed(30)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-n_piles = 7
+n_piles = 5
 batch_size = 128
 eval_interval = 50
-num_layers = 3
+num_layers = 1
 n_epochs = 500
 
-train_dataset = Dataset(n_samples=10000, n_piles=n_piles)
-test_dataset = Dataset(n_samples=2000, n_piles=n_piles)
+train_dataset = BoardDataset(n_samples=10000, n_piles=n_piles)
+test_dataset = BoardDataset(n_samples=2000, n_piles=n_piles)
 
-train_dataloader = DataLoader(train_dataset, batch_size=batch_size)
+train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 dataloader_dict = {
-    'test': DataLoader(test_dataset, batch_size=batch_size),
+    'test': DataLoader(test_dataset, batch_size=batch_size, shuffle=True),
 }
 
 lstm_model = LSTM(input_size=1,

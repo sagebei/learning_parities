@@ -11,7 +11,7 @@ def set_seed(seed):
     torch.cuda.manual_seed_all(seed)
 
 
-class Dataset(Dataset):
+class BoardDataset(Dataset):
     def __init__(self, n_samples, n_piles):
         self.n_samples = n_samples
         self.n_piles = n_piles
@@ -20,36 +20,66 @@ class Dataset(Dataset):
         self.build_dataset()
         print(Counter(self.Y))
 
-
     def __len__(self):
         return len(self.X)
 
     def generate_data(self):
-        x = np.random.randint(2, size=2 * self.n_piles)
-        x = np.insert(x, [2 + 3 * i - i for i in range(self.n_piles - 1)], -1)
+        x = []
+        num_ones = 0
+        num_twos = 0
+        for n_pile in range(self.n_piles):
+            r = random.randint(0, 2)
+            if r == 0:
+                x.extend([0, 0, -1])
+            elif r == 1:
+                num_ones += 1
+                x.extend([0, 1, -1])
+            elif r == 2:
+                num_twos += 1
+                x.extend([1, 1, -1])
 
-        f_vals = x[[0 + 3 * i for i in range(self.n_piles)]]
-        s_vals = x[[1 + 3 * i for i in range(self.n_piles)]]
+        x = x[:-1]
 
-        f = sum(f_vals) % 2
-        s = sum(s_vals) % 2
+        num_ones %= 2
+        num_twos %= 2
 
-        if f == 0 and s == 0:
+        if num_ones == 0 and num_twos == 0:
             return None, None
-        elif f == 1 and s == 0:
+        elif num_ones == 1 and num_twos == 0:
             return x, 0
-        elif f == 0 and s == 1:
+        elif num_ones == 0 and num_twos == 1:
             return x, 1
-        elif f == 1 and s == 1:
+        elif num_ones == 1 and num_twos == 1:
             return x, 2
 
     def build_dataset(self):
-        for _ in range(self.n_samples):
+        n_sample_per_class = (self.n_samples // 3) + 1
+        x_zeros = []
+        x_ones = []
+        x_twos = []
+
+        while True:
             x, y = self.generate_data()
             if x is not None:
                 x = np.expand_dims(x, axis=-1).astype(np.float32)
-                self.X.append(x)
-                self.Y.append(y)
+
+                if y == 0:
+                    x_zeros.append(x)
+                elif y == 1:
+                    x_ones.append(x)
+                elif y == 2:
+                    x_twos.append(x)
+
+            if len(x_zeros) >= n_sample_per_class and len(x_ones) >= n_sample_per_class and len(x_twos) >= n_sample_per_class:
+                break
+
+        self.X.extend(random.sample(x_zeros, n_sample_per_class))
+        self.X.extend(random.sample(x_ones, n_sample_per_class))
+        self.X.extend(random.sample(x_twos, n_sample_per_class))
+
+        for i in range(3):
+            for _ in range(n_sample_per_class):
+                self.Y.append(i)
 
     def __getitem__(self, index):
         return self.X[index], self.Y[index]
@@ -57,7 +87,7 @@ class Dataset(Dataset):
 
 def batch_accuracy(y_pred_batch, y_batch):
     y_pred_batch = torch.argmax(y_pred_batch, dim=1, keepdim=False)
-    acc = ((y_pred_batch > 0) == y_batch).float().mean().item()
+    acc = (y_pred_batch == y_batch).float().mean().item()
     return acc
 
 
@@ -79,5 +109,6 @@ def dataloader_accuracy(dataloader, model):
 
 
 if __name__ == '__main__':
-    data = Dataset(n_samples=1000, n_piles=5)
-    print(data.X, data.Y)
+    data = BoardDataset(n_samples=10, n_piles=4)
+    for x, y in zip(data.X, data.Y):
+        print(x, y)
