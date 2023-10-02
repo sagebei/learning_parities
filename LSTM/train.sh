@@ -10,7 +10,6 @@
 
 # Load the necessary modules
 module load python/3.8.5
-module load cudnn/8.1.1-cuda11
 
 # Load the virtualenv containing the pytorch package
 source ~/venv/bin/activate
