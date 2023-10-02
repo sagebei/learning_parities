@@ -14,6 +14,7 @@ module load python/3.8.5
 # Load the virtualenv containing the pytorch package
 source ~/venv/bin/activate
 
+# $(( 1280 * $n_bits ))
 
 for lr in 0.001 0.0003 0.0005; do
   for n_bits in 20 30 40 45 50 60 70 80 90 100; do
