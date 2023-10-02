@@ -6,7 +6,6 @@
 #$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
 #$ -l h_rt=24:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=1         # Request GPU
-#$ -l cluster=andrena  # Ensure that the job runs on Andrena nodes
 #$ -N lstm      # Name for the job (optional)
 
 # Load the necessary modules
@@ -17,16 +16,18 @@ module load cudnn/8.1.1-cuda11
 source ~/venv/bin/activate
 
 
-for lr in 0.01 0.03 0.05 0.001 0.003 0.005 0.0001 0.0003 0.0005; do
-python train_lstm.py --n_elems=40 \
-                     --n_train_elems=40 \
+for lr in 0.001 0.0003 0.0005; do
+  for n_bits in 20 30 40 45 50 60 70 80 90 100; do
+python train_lstm.py --n_elems=$n_bits \
+                     --n_train_elems=$n_bits \
                      --n_train_samples=256000 \
                      --n_eval_samples=10000 \
                      --n_epochs=500 \
                      --n_layers=1 \
                      --train_unique='' \
                      --noise='.' \
-                     --log_folder='logs' \
+                     --log_folder='/data/scratch/acw554/parity/lstm' \
                      --seed=33  \
                      --lr=$lr
+done;
 done;
