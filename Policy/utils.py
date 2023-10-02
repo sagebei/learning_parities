@@ -3,6 +3,8 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 from collections import Counter
+from copy import deepcopy
+
 
 def set_seed(seed):
     random.seed(seed)
@@ -12,11 +14,12 @@ def set_seed(seed):
 
 
 class BoardDataset(Dataset):
-    def __init__(self, n_samples, n_piles):
+    def __init__(self, n_samples, n_piles, existing_X):
         self.n_samples = n_samples
         self.n_piles = n_piles
         self.X = list()
         self.Y = list()
+        self.existing_X = deepcopy(existing_X) if len(existing_X) == 0 else np.squeeze(deepcopy(existing_X)).astype(int).tolist()
         self.build_dataset()
         print(Counter(self.Y))
 
@@ -42,6 +45,9 @@ class BoardDataset(Dataset):
 
         num_ones %= 2
         num_twos %= 2
+
+        if x in self.existing_X:
+            return None, None
 
         if num_ones == 0 and num_twos == 0:
             return None, None
@@ -81,6 +87,10 @@ class BoardDataset(Dataset):
             for _ in range(n_sample_per_class):
                 self.Y.append(i)
 
+        zipped = list(zip(self.X, self.Y))
+        random.shuffle(zipped)
+        self.X, self.Y = zip(*zipped)
+
     def __getitem__(self, index):
         return self.X[index], self.Y[index]
 
@@ -108,7 +118,7 @@ def dataloader_accuracy(dataloader, model):
     return sum(accuracy) / len(accuracy)
 
 
-if __name__ == '__main__':
-    data = BoardDataset(n_samples=10, n_piles=4)
-    for x, y in zip(data.X, data.Y):
-        print(x, y)
+# if __name__ == '__main__':
+#     data = BoardDataset(n_samples=10, n_piles=4, existing_X=[])
+#     for x, y in zip(data.X, data.Y):
+#         print(x, y)

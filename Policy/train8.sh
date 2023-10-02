@@ -21,9 +21,9 @@ for lr in 0.001 0.0001 0.0003 0.0005; do
   for num_layers in 1 2 3 4 5; do
     python main.py --n_piles=8 \
                    --num_layers=$num_layers \
-                   --n_train_samples=30000 \
-                   --n_test_samples=6000 \
-                   --n_epochs=500 \
+                   --n_train_samples=5000 \
+                   --n_test_samples=1000 \
+                   --n_epochs=1000 \
                    --lr=$lr
 done;
 done;

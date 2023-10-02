@@ -81,6 +81,10 @@ class BoardDataset(Dataset):
             for _ in range(n_sample_per_class):
                 self.Y.append(i)
 
+        zipped = list(zip(self.X, self.Y))
+        random.shuffle(zipped)
+        self.X, self.Y = zip(*zipped)
+
     def __getitem__(self, index):
         return self.X[index], self.Y[index]
 

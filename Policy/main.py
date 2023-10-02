@@ -3,8 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from utils import set_seed
-from utils import BoardDataset
+from utils import set_seed, BoardDataset
 from utils import batch_accuracy, dataloader_accuracy
 from models import LSTM
 import argparse
@@ -15,7 +14,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_piles',
                     type=int,
-                    default=3,
+                    default=8,
                     help='length of the bitstring.')
 PARSER.add_argument('--num_layers',
                     type=int,
@@ -23,11 +22,11 @@ PARSER.add_argument('--num_layers',
                     help='length of the bitstring used for training.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
-                    default=10000,
+                    default=5000,
                     help='number of training samples.')
 PARSER.add_argument('--n_test_samples',
                     type=int,
-                    default=2000,
+                    default=1000,
                     help='number of training samples.')
 PARSER.add_argument('--lr',
                     type=float,
@@ -42,8 +41,8 @@ args = PARSER.parse_args()
 batch_size = 64
 eval_interval = 50
 
-train_dataset = BoardDataset(n_samples=args.n_train_samples, n_piles=args.n_piles)
-test_dataset = BoardDataset(n_samples=args.n_test_samples, n_piles=args.n_piles + 2)
+train_dataset = BoardDataset(n_samples=args.n_train_samples, n_piles=args.n_piles, existing_X=[])
+test_dataset = BoardDataset(n_samples=args.n_test_samples, n_piles=args.n_piles, existing_X=train_dataset.X)
 
 train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 dataloader_dict = {
@@ -58,7 +57,7 @@ lstm_model = lstm_model.to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(lstm_model.parameters(), lr=args.lr)
-writer = SummaryWriter(f'logs/{args.n_piles}_{args.num_layers}_{args.lr}')
+writer = SummaryWriter(f'logs/{args.n_piles}_{args.num_layers}_{args.lr}_{args.n_train_samples}_{args.n_test_samples}')
 
 
 num_steps = 0
