@@ -6,7 +6,7 @@
 #$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
 #$ -l h_rt=24:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=1         # Request GPU
-#$ -N policy9      # Name for the job (optional)
+#$ -N policy10      # Name for the job (optional)
 
 # Load the necessary modules
 module load python/3.8.5
@@ -15,8 +15,8 @@ module load python/3.8.5
 source ~/venv/bin/activate
 
 
-for lr in 0.001 0.0001 0.0003 0.0005; do
-  for num_layers in 1 2 3 4 5; do
+for lr in 0.001 0.0003 0.0005; do
+  for num_layers in 1 3 5; do
     python main.py --n_piles=10 \
                    --num_layers=$num_layers \
                    --n_train_samples=40000 \
