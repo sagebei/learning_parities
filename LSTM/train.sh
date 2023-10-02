@@ -17,7 +17,7 @@ source ~/venv/bin/activate
 # $(( 1280 * $n_bits ))
 
 for lr in 0.001 0.0003 0.0005; do
-  for n_bits in 20 30 40 45 50 60 70 80 90 100; do
+  for n_bits in 20 30 40 50 60 70 80 90 100; do
 python train_lstm.py --n_elems=$n_bits \
                      --n_train_elems=$n_bits \
                      --n_train_samples=256000 \
