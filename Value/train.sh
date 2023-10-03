@@ -3,9 +3,8 @@
 #$ -cwd
 #$ -j y
 #$ -pe smp 8        # Request cores (8 per GPU)
-#$ -l h_vmem=7.5G   # Request RAM (7.5GB per core)
-#$ -l h_rt=24:0:0    # Max 1hr runtime (can request up to 240hr)
-
+#$ -l h_vmem=11G   # Request RAM (7.5GB per core)
+#$ -l h_rt=240:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -l gpu=1         # Request GPU
 #$ -N value      # Name for the job (optional)
 #$ -t 20-100:5
