@@ -29,8 +29,8 @@ PARSER.add_argument('--lr',
 args = PARSER.parse_args()
 
 total_samples = 3 ** args.n_piles
-n_train_samples = min(int(total_samples * 0.5), 100000)
-n_test_samples = min(int(total_samples * 0.2), 10000)
+n_train_samples = min(int(total_samples * 0.8), 1000000)
+n_test_samples = min(int(total_samples * 0.1), 10000)
 
 batch_size = 64
 eval_interval = 100
