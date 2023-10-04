@@ -10,7 +10,7 @@ import argparse
 import sys
 import os
 
-set_seed(30)
+set_seed(369)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 PARSER = argparse.ArgumentParser()
