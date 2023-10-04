@@ -26,6 +26,6 @@ python main.py --n_elems=${SGE_TASK_ID} \
                --train_unique='' \
                --noise='.' \
                --log_folder='/data/scratch/acw554/parity/lstm' \
-               --seed=66  \
+               --seed=99  \
                --lr=$lr
 done;
