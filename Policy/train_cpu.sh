@@ -15,8 +15,8 @@ module load python/3.8.5
 source ~/venv/bin/activate
 
 
+for num_layers in 1 2 3; do
 for lr in 0.001 0.002 0.003 0.005 0.0003 0.0005; do
-  for num_layers in 1 2 3; do
     python main.py --n_piles=${SGE_TASK_ID} \
                    --num_layers=$num_layers \
                    --lr=$lr
