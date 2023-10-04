@@ -29,8 +29,8 @@ PARSER.add_argument('--lr',
 args = PARSER.parse_args()
 
 total_samples = 3 ** args.n_piles
-n_train_samples = min(int(total_samples * 0.6), 500000)
-n_test_samples = min(int(total_samples * 0.2), 50000)
+n_train_samples = min(int(total_samples * 0.5), 100000)
+n_test_samples = min(int(total_samples * 0.2), 10000)
 
 batch_size = 64
 eval_interval = 100
@@ -58,7 +58,7 @@ if not os.path.exists("converge"):
     os.makedirs("converge")
 
 num_steps = 0
-while num_steps < 10000000:
+while num_steps < 1000000:
     for X_batch, y_batch in train_dataloader:
 
         X_batch = X_batch.to(device)
