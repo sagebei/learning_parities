@@ -131,7 +131,7 @@ for num_epoch in range(args.n_epochs):
                 val_acc = dataloader_accuracy(loader, lstm_model)
                 # print(val_acc)
                 # writer.add_scalar(loader_name, val_acc, num_steps)
-                if val_acc > 0.95:
+                if val_acc > 0.90:
                     with open(f"converge/{args.n_elems}.txt", "a") as f:
                         f.write(f"{val_acc}-{num_steps}\n")
                     sys.exit()
