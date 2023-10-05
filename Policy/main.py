@@ -29,10 +29,10 @@ PARSER.add_argument('--lr',
 args = PARSER.parse_args()
 
 total_samples = 3 ** args.n_piles
-n_train_samples = min(int(total_samples * 0.8), 1000000)
+n_train_samples = min(int(total_samples * 0.7), 1000000)
 n_test_samples = min(int(total_samples * 0.1), 10000)
 
-batch_size = 64
+batch_size = 128
 eval_interval = 100
 
 train_dataset = BoardDataset(n_samples=n_train_samples, n_piles=args.n_piles, existing_X=[])

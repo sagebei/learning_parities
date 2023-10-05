@@ -16,7 +16,7 @@ source ~/venv/bin/activate
 
 # $(( 1280 * $n_bits ))
 
-for lr in 0.001 0.0025 0.0003 0.005 0.0003 0.0005 0.0001; do
+for lr in 0.001 0.0025 0.003 0.004 0.005 0.0002 0.0003 0.0005 0.0001; do
 python main.py --n_elems=${SGE_TASK_ID} \
                --n_train_elems=${SGE_TASK_ID} \
                --n_train_samples=128000 \
@@ -26,6 +26,6 @@ python main.py --n_elems=${SGE_TASK_ID} \
                --train_unique='' \
                --noise='.' \
                --log_folder='/data/scratch/acw554/parity/lstm' \
-               --seed=99  \
+               --seed=6  \
                --lr=$lr
 done;
