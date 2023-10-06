@@ -16,7 +16,7 @@ source ~/venv/bin/activate
 
 
 for num_layers in 1 2 3; do
-for lr in 0.001 0.002 0.003 0.005 0.0003 0.0005; do
+for lr in 0.001 0.0025 0.003 0.004 0.005 0.0002 0.0003 0.0005 0.0001; do
     python main.py --n_piles=${SGE_TASK_ID} \
                    --num_layers=$num_layers \
                    --lr=$lr

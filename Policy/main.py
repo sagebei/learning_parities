@@ -77,7 +77,7 @@ while num_steps < 1000000:
             for loader_name, loader in dataloader_dict.items():
                 val_acc = dataloader_accuracy(loader, lstm_model)
                 # writer.add_scalar(loader_name, val_acc, num_steps)
-                if val_acc > 0.90:
+                if val_acc > 0.85:
                     with open(f"converge/{args.n_piles}.txt", "a") as f:
                         f.write(f"{val_acc}-{num_steps}\n")
                     sys.exit()
