@@ -30,7 +30,7 @@ args = PARSER.parse_args()
 
 total_samples = 3 ** args.n_piles
 n_train_samples = min(int(total_samples * 0.7), 1000000)
-n_test_samples = min(int(total_samples * 0.1), 10000)
+n_test_samples = min(int(total_samples * 0.1), 5000)
 
 batch_size = 128
 eval_interval = 100
@@ -50,7 +50,9 @@ lstm_model = lstm_model.to(device)
 
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(lstm_model.parameters(), lr=args.lr)
+
+learning_rate = 0.0001 * args.lr
+optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
 # writer = SummaryWriter(f'/data/scratch/acw554/parity/policy/{args.n_piles}_{args.num_layers}_{args.lr}_{args.n_train_samples}_{args.n_test_samples}')
 
 
@@ -77,8 +79,8 @@ while num_steps < 1000000:
             for loader_name, loader in dataloader_dict.items():
                 val_acc = dataloader_accuracy(loader, lstm_model)
                 # writer.add_scalar(loader_name, val_acc, num_steps)
-                if val_acc > 0.85:
-                    with open(f"converge/{args.n_piles}.txt", "a") as f:
+                if val_acc > 0.9:
+                    with open(f"data/n={args.n_piles}.txt", "a") as f:
                         f.write(f"{val_acc}-{num_steps}\n")
                     sys.exit()
 
