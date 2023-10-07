@@ -56,8 +56,8 @@ optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
 # writer = SummaryWriter(f'/data/scratch/acw554/parity/policy/{args.n_piles}_{args.num_layers}_{args.lr}_{args.n_train_samples}_{args.n_test_samples}')
 
 
-if not os.path.exists("converge"):
-    os.makedirs("converge")
+if not os.path.exists("data"):
+    os.makedirs("data")
 
 num_steps = 0
 while num_steps < 1000000:
