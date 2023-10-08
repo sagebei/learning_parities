@@ -66,7 +66,7 @@ set_seed(args.seed)
 if not os.path.exists("converge"):
     os.makedirs("converge")
 
-train_data = ParityDataset(n_samples=args.n_train_samples,
+train_data = ParityDataset(n_samples=args.n_train_samples * int(args.n_elems/20),
                            n_elems=args.n_elems,
                            n_nonzero_min=1,
                            n_nonzero_max=args.n_train_elems,
@@ -106,7 +106,8 @@ lstm_model = LSTM(input_size=1,
 lstm_model = lstm_model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.Adam(lstm_model.parameters(), lr=args.lr)
+learning_rate = 0.0001 * args.lr
+optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
 # writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}/{args.lr}_{args.n_train_samples}')
 
 
