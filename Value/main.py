@@ -63,8 +63,8 @@ print(args)
 
 set_seed(args.seed)
 
-if not os.path.exists("converge"):
-    os.makedirs("converge")
+if not os.path.exists("data"):
+    os.makedirs("data")
 
 train_data = ParityDataset(n_samples=args.n_train_samples * int(args.n_elems/20),
                            n_elems=args.n_elems,
@@ -132,8 +132,8 @@ for num_epoch in range(args.n_epochs):
                 val_acc = dataloader_accuracy(loader, lstm_model)
                 # print(val_acc)
                 # writer.add_scalar(loader_name, val_acc, num_steps)
-                if val_acc > 0.85:
-                    with open(f"converge/{args.n_elems}.txt", "a") as f:
+                if val_acc > 0.90:
+                    with open(f"data/n={args.n_elems}.txt", "a") as f:
                         f.write(f"{val_acc}-{num_steps}\n")
                     sys.exit()
 
