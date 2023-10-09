@@ -29,7 +29,7 @@ PARSER.add_argument('--lr',
 args = PARSER.parse_args()
 
 total_samples = 3 ** args.n_piles
-n_train_samples = min(int(total_samples * 0.7), 1000000)
+n_train_samples = min(int(total_samples * 0.7), 5000000)
 n_test_samples = min(int(total_samples * 0.1), 5000)
 
 batch_size = 128
@@ -56,11 +56,11 @@ optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
 # writer = SummaryWriter(f'/data/scratch/acw554/parity/policy/{args.n_piles}_{args.num_layers}_{args.lr}_{args.n_train_samples}_{args.n_test_samples}')
 
 
-if not os.path.exists("data"):
-    os.makedirs("data")
+if not os.path.exists("policy"):
+    os.makedirs("policy")
 
 num_steps = 0
-while num_steps < 1000000:
+while num_steps < 100000000:
     for X_batch, y_batch in train_dataloader:
 
         X_batch = X_batch.to(device)
@@ -80,7 +80,7 @@ while num_steps < 1000000:
                 val_acc = dataloader_accuracy(loader, lstm_model)
                 # writer.add_scalar(loader_name, val_acc, num_steps)
                 if val_acc > 0.9:
-                    with open(f"data/n={args.n_piles}.txt", "a") as f:
+                    with open(f"policy/n={args.n_piles}.txt", "a") as f:
                         f.write(f"{val_acc}-{num_steps}\n")
                     sys.exit()
 
