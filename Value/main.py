@@ -63,8 +63,9 @@ print(args)
 
 set_seed(args.seed)
 
-if not os.path.exists("value"):
-    os.makedirs("value")
+result_folder = "values1"
+if not os.path.exists(result_folder):
+    os.makedirs(result_folder)
 
 train_data = ParityDataset(n_samples=args.n_train_samples * int(args.n_elems/20),
                            n_elems=args.n_elems,
@@ -101,7 +102,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 eval_interval = 100
 lstm_model = LSTM(input_size=1,
-                  hidden_size=128,
+                  hidden_size=56,
                   num_layers=args.n_layers)
 lstm_model = lstm_model.to(device)
 
@@ -132,8 +133,8 @@ for num_epoch in range(args.n_epochs):
                 val_acc = dataloader_accuracy(loader, lstm_model)
                 # print(val_acc)
                 # writer.add_scalar(loader_name, val_acc, num_steps)
-                if val_acc > 0.95:
-                    with open(f"value/n={args.n_elems}.txt", "a") as f:
+                if val_acc > 0.90:
+                    with open(f"{result_folder}/n={args.n_elems}.txt", "a") as f:
                         f.write(f"{val_acc}-{num_steps}\n")
                     sys.exit()
 
