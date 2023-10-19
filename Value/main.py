@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from utils import set_seed
-from utils import ParityDataset
+from utils import ParityDataset, PureParityDataset
 from utils import batch_accuracy, dataloader_accuracy
 from models import LSTM
 import argparse
@@ -67,7 +67,7 @@ result_folder = "approach_1"
 if not os.path.exists(result_folder):
     os.makedirs(result_folder)
 
-train_data = ParityDataset(n_samples=args.n_train_samples * int(args.n_elems/20),
+train_data = PureParityDataset(n_samples=args.n_train_samples * int(args.n_elems/20),
                            n_elems=args.n_elems,
                            n_nonzero_min=1,
                            n_nonzero_max=args.n_train_elems,
@@ -75,7 +75,7 @@ train_data = ParityDataset(n_samples=args.n_train_samples * int(args.n_elems/20)
                            unique=args.train_unique,
                            model='rnn',
                            noise=args.noise)
-val_data = ParityDataset(n_samples=args.n_eval_samples,
+val_data = PureParityDataset(n_samples=args.n_eval_samples,
                          n_elems=args.n_elems,
                          n_nonzero_min=1,
                          n_nonzero_max=args.n_train_elems,
@@ -83,7 +83,7 @@ val_data = ParityDataset(n_samples=args.n_eval_samples,
                          unique=True,
                          model='rnn',
                          noise=args.noise)
-extra_data = ParityDataset(n_samples=args.n_eval_samples,
+extra_data = PureParityDataset(n_samples=args.n_eval_samples,
                            n_elems=args.n_elems+10,
                            n_nonzero_min=args.n_elems,
                            n_nonzero_max=args.n_elems+10,
