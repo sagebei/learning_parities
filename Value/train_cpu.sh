@@ -18,7 +18,7 @@ source ~/venv/bin/activate
 
 python main.py --n_elems=$1 \
                --n_train_elems=$1 \
-               --n_train_samples=128000 \
+               --n_train_samples=64000 \
                --n_eval_samples=5000 \
                --n_epochs=100000 \
                --n_layers=1 \

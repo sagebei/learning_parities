@@ -63,7 +63,7 @@ print(args)
 
 set_seed(args.seed)
 
-result_folder = "values1"
+result_folder = "approach_1"
 if not os.path.exists(result_folder):
     os.makedirs(result_folder)
 
@@ -133,7 +133,7 @@ for num_epoch in range(args.n_epochs):
                 val_acc = dataloader_accuracy(loader, lstm_model)
                 # print(val_acc)
                 # writer.add_scalar(loader_name, val_acc, num_steps)
-                if val_acc > 0.90:
+                if val_acc > 0.95:
                     with open(f"{result_folder}/n={args.n_elems}.txt", "a") as f:
                         f.write(f"{val_acc}-{num_steps}\n")
                     sys.exit()
