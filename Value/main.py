@@ -83,14 +83,14 @@ val_data = PureParityDataset(n_samples=args.n_eval_samples,
                          unique=True,
                          model='rnn',
                          noise=args.noise)
-extra_data = PureParityDataset(n_samples=args.n_eval_samples,
-                           n_elems=args.n_elems+10,
-                           n_nonzero_min=args.n_elems,
-                           n_nonzero_max=args.n_elems+10,
-                           exclude_dataset=None,
-                           unique=True,
-                           model='rnn',
-                           noise=args.noise)
+# extra_data = PureParityDataset(n_samples=args.n_eval_samples,
+#                            n_elems=args.n_elems+10,
+#                            n_nonzero_min=args.n_elems,
+#                            n_nonzero_max=args.n_elems+10,
+#                            exclude_dataset=None,
+#                            unique=True,
+#                            model='rnn',
+#                            noise=args.noise)
 
 batch_size = 128
 train_dataloader = DataLoader(train_data, batch_size=batch_size)
