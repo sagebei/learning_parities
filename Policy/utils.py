@@ -95,6 +95,50 @@ class BoardDataset(Dataset):
         return self.X[index], self.Y[index]
 
 
+class RealBoardDataset(BoardDataset):
+    def __init__(self, n_samples, n_piles, existing_X):
+        super().__init__(n_samples, n_piles, existing_X)
+
+    def generate_data(self):
+        x = []
+        num_ones = 0
+        num_twos = 0
+        n_piles = torch.randint(1, self.n_piles, (1,)).item()
+
+        for n_pile in range(n_piles):
+            r = random.randint(1, 2)
+            if r == 1:
+                num_ones += 1
+                x.append([0, 1, -1])
+            elif r == 2:
+                num_twos += 1
+                x.append([1, 1, -1])
+
+        for _ in range(self.n_piles - n_piles):
+            x.append([0, 0, -1])
+
+        random.shuffle(x)
+        X = []
+        for i in x:
+            X.extend(i)
+
+        X = X[:-1]
+
+        num_ones %= 2
+        num_twos %= 2
+
+        if X in self.existing_X:
+            return None, None
+
+        if num_ones == 0 and num_twos == 0:
+            return None, None
+        elif num_ones == 1 and num_twos == 0:
+            return X, 0
+        elif num_ones == 0 and num_twos == 1:
+            return X, 1
+        elif num_ones == 1 and num_twos == 1:
+            return X, 2
+
 def batch_accuracy(y_pred_batch, y_batch):
     y_pred_batch = torch.argmax(y_pred_batch, dim=1, keepdim=False)
     acc = (y_pred_batch == y_batch).float().mean().item()
@@ -118,7 +162,7 @@ def dataloader_accuracy(dataloader, model):
     return sum(accuracy) / len(accuracy)
 
 
-# if __name__ == '__main__':
-#     data = BoardDataset(n_samples=10, n_piles=4, existing_X=[])
-#     for x, y in zip(data.X, data.Y):
-#         print(x, y)
+if __name__ == '__main__':
+    data = RealBoardDataset(n_samples=10, n_piles=4, existing_X=[])
+    for x, y in zip(data.X, data.Y):
+        print(x, y)

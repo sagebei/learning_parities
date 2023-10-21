@@ -92,53 +92,55 @@ val_data = PureParityDataset(n_samples=args.n_eval_samples,
 #                            model='rnn',
 #                            noise=args.noise)
 
-batch_size = 128
-train_dataloader = DataLoader(train_data, batch_size=batch_size)
-dataloader_dict = {
-    'validation': DataLoader(val_data, batch_size=batch_size),
-    # 'extra': DataLoader(extra_data, batch_size=batch_size),
-}
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(len(train_data.X[0]))
 
-eval_interval = 100
-lstm_model = LSTM(input_size=1,
-                  hidden_size=56,
-                  num_layers=args.n_layers)
-lstm_model = lstm_model.to(device)
-
-criterion = nn.BCEWithLogitsLoss()
-learning_rate = 0.0001 * args.lr
-optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
-# writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}/{args.lr}_{args.n_train_samples}')
-
-
-num_steps = 0
-for num_epoch in range(args.n_epochs):
-    print(f'Epochs: {num_epoch}')
-    for X_batch, y_batch in train_dataloader:
-
-        X_batch = X_batch.to(device)
-        y_batch = y_batch.to(device)
-        y_pred_batch = lstm_model(X_batch)[:, 0]
-        # train_batch_acc = batch_accuracy(y_pred_batch, y_batch)
-        # writer.add_scalar('train_batch_accuracy', train_batch_acc, num_steps)
-
-        loss = criterion(y_pred_batch, y_batch)
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        if (num_steps % eval_interval) == 0:
-            for loader_name, loader in dataloader_dict.items():
-                val_acc = dataloader_accuracy(loader, lstm_model)
-                # print(val_acc)
-                # writer.add_scalar(loader_name, val_acc, num_steps)
-                if val_acc > 0.95:
-                    with open(f"{result_folder}/n={args.n_elems}.txt", "a") as f:
-                        f.write(f"{val_acc}-{num_steps}\n")
-                    sys.exit()
-
-        num_steps += 1
+# batch_size = 128
+# train_dataloader = DataLoader(train_data, batch_size=batch_size)
+# dataloader_dict = {
+#     'validation': DataLoader(val_data, batch_size=batch_size),
+#     # 'extra': DataLoader(extra_data, batch_size=batch_size),
+# }
+# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#
+# eval_interval = 100
+# lstm_model = LSTM(input_size=1,
+#                   hidden_size=56,
+#                   num_layers=args.n_layers)
+# lstm_model = lstm_model.to(device)
+#
+# criterion = nn.BCEWithLogitsLoss()
+# learning_rate = 0.0001 * args.lr
+# optimizer = optim.Adam(lstm_model.parameters(), lr=learning_rate)
+# # writer = SummaryWriter(f'{args.log_folder}/{args.n_elems}/{args.lr}_{args.n_train_samples}')
+#
+#
+# num_steps = 0
+# for num_epoch in range(args.n_epochs):
+#     print(f'Epochs: {num_epoch}')
+#     for X_batch, y_batch in train_dataloader:
+#
+#         X_batch = X_batch.to(device)
+#         y_batch = y_batch.to(device)
+#         y_pred_batch = lstm_model(X_batch)[:, 0]
+#         # train_batch_acc = batch_accuracy(y_pred_batch, y_batch)
+#         # writer.add_scalar('train_batch_accuracy', train_batch_acc, num_steps)
+#
+#         loss = criterion(y_pred_batch, y_batch)
+#         optimizer.zero_grad()
+#         loss.backward()
+#         optimizer.step()
+#
+#         if (num_steps % eval_interval) == 0:
+#             for loader_name, loader in dataloader_dict.items():
+#                 val_acc = dataloader_accuracy(loader, lstm_model)
+#                 # print(val_acc)
+#                 # writer.add_scalar(loader_name, val_acc, num_steps)
+#                 if val_acc > 0.95:
+#                     with open(f"{result_folder}/n={args.n_elems}.txt", "a") as f:
+#                         f.write(f"{val_acc}-{num_steps}\n")
+#                     sys.exit()
+#
+#         num_steps += 1
 
 # torch.save(lstm_model.state_dict(), f'models/{args.n_elems}_{args.lr}_{args.n_train_samples}.pt')
 
