@@ -6,7 +6,7 @@
 #$ -l h_vmem=8G   # Request RAM (7.5GB per core)
 #$ -l h_rt=1:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -N value      # Name for the job (optional)
-#$ -t 1-100
+#$ -t 1-100:5
 
 # Load the necessary modules
 module load python/3.8.5
