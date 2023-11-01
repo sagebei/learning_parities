@@ -4,7 +4,7 @@
 #$ -j y
 #$ -pe smp 1        # Request cores (8 per GPU)
 #$ -l h_vmem=16G   # Request RAM (7.5GB per core)
-#$ -l h_rt=24:0:0    # Max 1hr runtime (can request up to 240hr)
+#$ -l h_rt=1:0:0    # Max 1hr runtime (can request up to 240hr)
 #$ -N value      # Name for the job (optional)
 #$ -t 1-100
 
