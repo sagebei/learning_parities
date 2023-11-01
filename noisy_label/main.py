@@ -39,10 +39,6 @@ PARSER.add_argument('--noise',
                     type=bool,
                     default='.',
                     help='if the parity data contain noise')
-PARSER.add_argument('--log_folder',
-                    type=str,
-                    default='logs',
-                    help='log folder')
 PARSER.add_argument('--seed',
                     type=int,
                     default=0,
