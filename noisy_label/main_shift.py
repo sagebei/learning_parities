@@ -13,11 +13,11 @@ import os, sys
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--n_elems',
                     type=int,
-                    default=20,
+                    default=25,
                     help='length of the bitstring.')
 PARSER.add_argument('--n_train_samples',
                     type=int,
-                    default=25600,
+                    default=12800,
                     help='number of training samples.')
 PARSER.add_argument('--n_eval_samples',
                     type=int,
@@ -29,7 +29,7 @@ PARSER.add_argument('--n_epochs',
                     help='Number of epochs to train.')
 PARSER.add_argument('--noisy_label',
                     type=float,
-                    default=0.3,
+                    default=0.2,
                     help='percentage of noise label.')
 PARSER.add_argument('--n_layers',
                     type=int,
@@ -45,7 +45,7 @@ PARSER.add_argument('--seed',
                     help='seed')
 PARSER.add_argument('--lr',
                     type=float,
-                    default=0.3,
+                    default=1,
                     help='learning rate')
 
 
@@ -57,16 +57,6 @@ set_seed(args.seed)
 result_folder = "results"
 if not os.path.exists(result_folder):
     os.makedirs(result_folder)
-
-train_data = ParityDataset(n_samples=args.n_train_samples,
-                           n_elems=args.n_elems,
-                           model='rnn',
-                           noise=args.noise)
-test_data = ParityDataset(n_samples=args.n_eval_samples,
-                          n_elems=args.n_elems,
-                          model='rnn',
-                          noise=args.noise)
-test_dataloader = DataLoader(test_data, batch_size=128)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -81,17 +71,25 @@ optimizer = optim.Adam(lstm_model.parameters(), lr=0.001 * args.lr)
 
 num_steps = 0
 train_max_acc = 0
-noisy_epoch = 200
-val_acc_list = []
 for num_epoch in range(args.n_epochs):
     print(f'Epochs: {num_epoch}')
 
-    test_avg_acc = sum(val_acc_list) / len(val_acc_list) if not len(val_acc_list) == 0 else 0.5
-    val_acc_list = []
+    if num_epoch < 200:
+        noisy_label = args.noisy_label * (1 - num_epoch / 200)
+    else:
+        noisy_label = 0
 
-    noisy_label = args.noisy_label * (-2 * test_avg_acc + 2) if test_avg_acc > 0.5 else args.noisy_label
-    # print(test_avg_acc, noisy_label)
-    train_data.add_noisy_label(noisy_label)
+    train_data = ParityDataset(n_samples=args.n_train_samples * int(args.n_elems / 20),
+                               n_elems=args.n_elems,
+                               model='rnn',
+                               noise=args.noise)
+    test_data = ParityDataset(n_samples=args.n_eval_samples,
+                              n_elems=args.n_elems,
+                              model='rnn',
+                              noise=args.noise)
+    test_dataloader = DataLoader(test_data, batch_size=128)
+
+    # train_data.add_noisy_label(noisy_label)
     train_dataloader = DataLoader(train_data, batch_size=128)
 
     for X_batch, y_batch in train_dataloader:
@@ -110,7 +108,6 @@ for num_epoch in range(args.n_epochs):
                 train_max_acc = train_acc
 
             val_acc = dataloader_accuracy(test_dataloader, lstm_model)
-            val_acc_list.append(val_acc)
             print(val_acc)
             if val_acc > 0.95:
                 with open(f"{result_folder}/n={args.n_elems}_{args.noisy_label}.txt", "a") as f:

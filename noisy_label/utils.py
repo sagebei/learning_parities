@@ -4,6 +4,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 from torch.utils.data import Dataset
+from copy import deepcopy
 
 def set_seed(seed):
     random.seed(seed)
@@ -17,23 +18,17 @@ class ParityDataset(Dataset):
         self,
         n_samples,
         n_elems,
-        noisy_label=0.1,
-        exclude_dataset=None,
-        unique=False,
         model='rnn',
         noise=True,
     ):
         self.n_samples = n_samples
         self.n_elems = n_elems
-        self.noisy_label = noisy_label
 
         self.model = model
         self.noise = noise
-        self.unique = unique
-        self.unique_set = set()
-        self.val_set = set() if exclude_dataset is None else exclude_dataset.unique_set
 
         self.X, self.Y = [], []
+        self.noisy_X, self.noisy_Y = [], []
         if self.n_samples > 0:
             self.build_dataset()
 
@@ -56,20 +51,14 @@ class ParityDataset(Dataset):
 
             y = (x == 1.0).sum() % 2
 
-            item = tuple(x.detach().clone().tolist())
-            if self.unique:
-                if (item not in self.val_set) and (item not in self.unique_set):
-                    return x, y.item(), item
-            else:
-                if item not in self.val_set:
-                    return x, y.item(), item
+            return x, y.item()
+
 
     def build_dataset(self):
         for _ in range(self.n_samples):
-            x, y, item = self.generate_data()
+            x, y = self.generate_data()
             self.X.append(x)
             self.Y.append(y)
-            self.unique_set.add(item)
 
         self.Y = torch.Tensor(self.Y).float()
         if self.model == 'rnn':
@@ -80,15 +69,25 @@ class ParityDataset(Dataset):
             self.X = torch.stack(self.X).to(torch.int64) + 1
             self.X = F.one_hot(self.X, num_classes=3).float()
 
-        noisy_percentage = int(self.noisy_label * self.n_samples)
-        self.Y[:noisy_percentage] = (self.Y[:noisy_percentage] + 1) % 2
-
         perm_index = torch.randperm(self.X.size()[0])
         self.X = self.X[perm_index]
         self.Y = self.Y[perm_index]
 
+        self.noisy_X = deepcopy(self.X)
+        self.noisy_Y = deepcopy(self.Y)
+
+    def add_noisy_label(self, noisy_label):
+        noisy_percentage = int(noisy_label * self.n_samples)
+        self.noisy_X = deepcopy(self.X)
+        self.noisy_Y = deepcopy(self.Y)
+        self.noisy_Y[:noisy_percentage] = (self.noisy_Y[:noisy_percentage] + 1) % 2
+
+        perm_index = torch.randperm(self.noisy_X.size()[0])
+        self.noisy_X = self.noisy_X[perm_index]
+        self.noisy_Y = self.noisy_Y[perm_index]
+
     def __getitem__(self, index):
-        return self.X[index], self.Y[index]
+        return self.noisy_X[index], self.noisy_Y[index]
 
 def batch_accuracy(y_pred_batch, y_batch):
     acc = ((y_pred_batch > 0) == y_batch).float().mean().item()
