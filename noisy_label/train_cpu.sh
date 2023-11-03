@@ -17,7 +17,7 @@ source ~/venv/bin/activate
 python main.py --n_elems=$1 \
                --n_train_samples=80000 \
                --n_eval_samples=5000 \
-               --n_epochs=100000 \
+               --n_epochs=10000 \
                --noisy_label=$2 \
                --n_layers=1 \
                --noise='.' \
