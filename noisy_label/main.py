@@ -54,7 +54,7 @@ print(args)
 
 set_seed(args.seed)
 
-result_folder = "confirmed_results"
+result_folder = "results"
 if not os.path.exists(result_folder):
     os.makedirs(result_folder)
 
