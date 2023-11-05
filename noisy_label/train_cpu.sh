@@ -15,7 +15,7 @@ module load python/3.8.5
 source ~/venv/bin/activate
 
 python main.py --n_elems=$1 \
-               --n_train_samples=80000 \
+               --n_train_samples=20000 \
                --n_eval_samples=5000 \
                --n_epochs=10000 \
                --noisy_label=$2 \

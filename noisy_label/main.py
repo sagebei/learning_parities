@@ -52,7 +52,7 @@ PARSER.add_argument('--lr',
 args = PARSER.parse_args()
 print(args)
 
-set_seed(args.seed)
+set_seed(args.seed * 3)
 
 result_folder = "results"
 if not os.path.exists(result_folder):
