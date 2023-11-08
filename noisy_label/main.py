@@ -8,6 +8,7 @@ from utils import dataloader_accuracy, batch_accuracy
 from models import LSTM
 import argparse
 import os, sys
+import random
 
 
 PARSER = argparse.ArgumentParser()
@@ -52,9 +53,9 @@ PARSER.add_argument('--lr',
 args = PARSER.parse_args()
 print(args)
 
-set_seed(args.seed * 3)
+set_seed(random.randint(1, 100000))
 
-result_folder = "results_100000"
+result_folder = "confirmed_results_100000"
 if not os.path.exists(result_folder):
     os.makedirs(result_folder)
 
